@@ -25,6 +25,10 @@
                     android:path="/my_redirect" />
             </intent-filter>
         </activity>
+        <provider
+            android:authorities="com.example.user.appforreddit"
+            android:name="com.example.user.appforreddit.Database.subredditDbContentProvider"
+            android:exported="false"></provider>
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
