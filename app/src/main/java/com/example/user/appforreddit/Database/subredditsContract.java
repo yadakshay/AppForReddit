@@ -20,7 +20,7 @@ public class subredditsContract {
         public static final String COLUMN_SUBREDDIT_ID = "subredditId";
         public static final String COLUMN_SUBREDDIT_DISPLAYNAME_PREFIXED = "prefixedDisplayName";
         public static final String COLUMN_SUBREDDIT_URL = "subredditUrl";
-        public static final String COLUMN_DISPLAY_SUBREDDIT = "dsplaySubreddit";
+        public static final String COLUMN_DISPLAY_SUBREDDIT = "displaySubreddit";
         public static final String COLUMN_SUBREDDIT_DESCRIPTION = "subDescription";
     }
 }

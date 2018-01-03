@@ -1,13 +1,26 @@
 package com.example.user.appforreddit;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import com.example.user.appforreddit.Database.subredditDbHelper;
+
+import java.util.ArrayList;
+
+import static com.example.user.appforreddit.Database.subredditsContract.subredditEntry.TABLE_NAME;
+
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<subredditCustomObject>> {
 
     private static final String AUTH_URL =
             "https://www.reddit.com/api/v1/authorize.compact?client_id=%s" +
@@ -19,13 +32,20 @@ public class MainActivity extends AppCompatActivity {
             "http://www.example.com/my_redirect";
 
     private static final String STATE = "MY_RANDOM_STRING_1";
-
-
+    private static final int SUBREDITS_LOADER_ID = 1004;
+    private static final String ACCESSCODE_ID = "accessCodeId";
+    private static String TAG = "RedditMainActivity";
+    private boolean tokenObtained;
+    private TextView tv;
+    private ProgressBar loadingBar;
+    private Button signInToReddit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        tv = (TextView) findViewById(R.id.textView);
+        loadingBar = (ProgressBar) findViewById(R.id.loading_spinner);
+        signInToReddit = (Button) findViewById(R.id.signin);
     }
 
     public void startSignIn(View view) {
@@ -46,9 +66,58 @@ public class MainActivity extends AppCompatActivity {
                 String state = uri.getQueryParameter("state");
                 if(state.equals(STATE)) {
                     String code = uri.getQueryParameter("code");
-                    NetworkUtils.getAccessToken(code, this);
+                    Bundle bundleForLoader = new Bundle();
+                    bundleForLoader.putString(ACCESSCODE_ID, code);
+                    getSupportLoaderManager().initLoader(SUBREDITS_LOADER_ID, bundleForLoader, MainActivity.this).forceLoad();
                 }
             }
         }
+    }
+
+    @Override
+    public Loader onCreateLoader(int id, final Bundle args) {
+        return new AsyncTaskLoader(this){
+            String accessCode = args.getString(ACCESSCODE_ID);
+            String json = null;
+            ArrayList<subredditCustomObject> subscribedSubreddits;
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+                signInToReddit.setVisibility(View.GONE);
+                loadingBar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public ArrayList<subredditCustomObject> loadInBackground() {
+                boolean haveToken = NetworkUtils.getSyncAccessToken(accessCode, getContext());
+                if(haveToken){
+                    json = NetworkUtils.makeSubredditCall(getApplicationContext());
+                }
+                subredditDbHelper dbHelper = new subredditDbHelper(getApplicationContext());
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                db.delete(TABLE_NAME, null, null); //clear old data for first login
+                subscribedSubreddits = NetworkUtils.extractSubredditsFromJSON(json);
+                databaseUtils.insertSubredditsToDatabase(subscribedSubreddits, getApplicationContext());
+                return subscribedSubreddits;
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<ArrayList<subredditCustomObject>> loader, ArrayList<subredditCustomObject> data) {
+        loadingBar.setVisibility(View.GONE);
+      //  Uri queryUri = subredditsContract.subredditEntry.CONTENT_URI;
+      //  queryUri = queryUri.buildUpon().appendPath(data.get(1).getSubredditId()).build();
+        //Cursor c = getContentResolver().query(queryUri, null, null, null, null);
+      //  c.moveToFirst();
+     //   tv.setVisibility(View.VISIBLE);
+      //  tv.setText(c.getString(c.getColumnIndex(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_DESCRIPTION)));
+        Intent i = new Intent(MainActivity.this, SubRedditPreferenceActivity.class);
+        startActivity(i);
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+
     }
 }

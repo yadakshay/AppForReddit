@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.user.appforreddit">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,18 +19,23 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:host="www.example.com"
-                    android:scheme="http"
-                    android:path="/my_redirect" />
+                <data
+                    android:host="www.example.com"
+                    android:path="/my_redirect"
+                    android:scheme="http" />
             </intent-filter>
         </activity>
+
         <provider
+            android:name=".Database.subredditDbContentProvider"
             android:authorities="com.example.user.appforreddit"
-            android:name="com.example.user.appforreddit.Database.subredditDbContentProvider"
-            android:exported="false"></provider>
+            android:exported="false" />
+
+        <activity android:name=".SubRedditPreferenceActivity"></activity>
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>
