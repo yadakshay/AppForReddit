@@ -2,8 +2,12 @@ package com.example.user.appforreddit;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.util.Log;
+
+import com.example.user.appforreddit.Database.subredditsContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +24,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.example.user.appforreddit.databaseUtils.context;
+
 /**
  * Created by user on 03-01-2018.
  */
@@ -31,6 +37,7 @@ public class NetworkUtils {
             "http://www.example.com/my_redirect";
     private static final String CLIENT_ID = "2XIKITvqkmX-yg";
     private static String ACCESS_SUBREDDITS_URL = "https://oauth.reddit.com/subreddits/mine/subscriber";
+    private static String GET_ARTICLES_BASE_URL = "https://oauth.reddit.com";
     private static String TAG = "RedditNetworkUtils";
     private static boolean obtainedToken = false;
     private static final String STRING_SHOW = "show";
@@ -176,5 +183,61 @@ public class NetworkUtils {
         }
 
         return subredditList;
+    }
+
+    public static ArrayList<articleCustomObject> getArticlesFromCursor(Cursor c) {
+        ArrayList<articleCustomObject> articlesList = new ArrayList<articleCustomObject>();
+        for(int i=0; i<c.getCount(); i++){
+            c.moveToPosition(i);
+            String subredditUrl = c.getString(c.getColumnIndex(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_URL));
+            String json = getArticleForSubreddit(subredditUrl, null);
+            articleCustomObject a = extractArticleFromJson(json, subredditUrl);
+            articlesList.add(a);
+        }
+        return articlesList;
+    }
+
+    private static String getArticleForSubreddit(String subredditURL, @Nullable String previousArticleId){
+        String RequestURL = GET_ARTICLES_BASE_URL + subredditURL + "new?limit=1";
+        if(previousArticleId != null){
+            RequestURL = RequestURL + "&after=t3_" + previousArticleId;
+        }
+        Log.d(TAG, RequestURL);
+        OkHttpClient client = new OkHttpClient();
+        SharedPreferences pref = context.getSharedPreferences("AppPref",Context.MODE_PRIVATE);
+        String token =pref.getString("token", "");
+        String responseJSON = null;
+        Request request = new Request.Builder()
+                .addHeader("User-Agent", "Sample App")
+                .addHeader("Authorization", "bearer " + token)
+                .url(RequestURL)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            responseJSON = response.body().string();
+          //  Log.d(TAG, responseJSON);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return responseJSON;
+    }
+
+    private static articleCustomObject extractArticleFromJson(String json, String subredditURL){
+        articleCustomObject articleObject = null;
+        try {
+            JSONObject articleJSON = new JSONObject(json);
+            JSONObject data = articleJSON.getJSONObject("data");
+            JSONObject article = data.getJSONArray("children").getJSONObject(0).getJSONObject("data");
+            String resourceURL = article.getString("url");
+            String articleTitle = article.getString("title");
+           // Log.d(TAG, articleTitle);
+            String thumbnail = article.getString("thumbnail");
+            String articleId = article.getString("id");
+            articleObject =
+                    new articleCustomObject(resourceURL, articleTitle, thumbnail, articleId, subredditURL);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return articleObject;
     }
 }

@@ -35,7 +35,13 @@
             android:authorities="com.example.user.appforreddit"
             android:exported="false" />
 
-        <activity android:name=".SubRedditPreferenceActivity"></activity>
+        <provider
+            android:name=".Database.articleDbContentProvider"
+            android:authorities="com.example.user.appforreddit.articleDb"
+            android:exported="false" />
+
+        <activity android:name=".SubRedditPreferenceActivity" />
+        <activity android:name=".ArticleFeedActivity"></activity>
     </application>
 
 </manifest>

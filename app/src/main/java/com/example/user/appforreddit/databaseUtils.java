@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.user.appforreddit.Database.articleContract;
 import com.example.user.appforreddit.Database.subredditsContract;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 
 public class databaseUtils {
     private static final String TAG = "redditAppDatabaseUtils";
-    static Context context;
+    static Context context, contextForArticle;
     public static void insertSubredditsToDatabase(ArrayList<subredditCustomObject> subredditList, Context c){
         context = c;
         for(int i = 0; i<subredditList.size(); i++){
@@ -48,4 +49,27 @@ public class databaseUtils {
         return uri;
     }
 
+    public static void addToArticlesDatabase(ArrayList<articleCustomObject> articlesList, Context c){
+        contextForArticle =c;
+        for(int i = 0; i<articlesList.size(); i++){
+            checkDuplicateAndInsertArticle(articlesList.get(i));
+        }
+    }
+
+    public static void checkDuplicateAndInsertArticle(articleCustomObject article){
+        ContentValues cv = new ContentValues();
+        Uri uri = null;
+        cv.put(articleContract.articleEntry.COLUMN_ARTICLE_URL, article.getResourceURL());
+        cv.put(articleContract.articleEntry.COLUM_ARTICLE_TITLE, article.getArticleTitle());
+        cv.put(articleContract.articleEntry.COLUMN_IMAGE_THUMB, article.getArticleThumbnail());
+        cv.put(articleContract.articleEntry.COLUMN_ARTICLE_ID, article.getArticleId());
+        cv.put(articleContract.articleEntry.COLUMN_SUBREDDIT_URL, article.getSubredditURL());
+        Uri queryUri = articleContract.articleEntry.CONTENT_URI;
+        queryUri = queryUri.buildUpon().appendPath(article.getSubredditURL()).build();
+        Cursor c = contextForArticle.getContentResolver().query(queryUri, null, null, null, null);
+        if(c !=null && c.getCount()>0){//do nothing
+        }else{
+            uri = contextForArticle.getContentResolver().insert(articleContract.articleEntry.CONTENT_URI, cv);
+        }
+    }
 }

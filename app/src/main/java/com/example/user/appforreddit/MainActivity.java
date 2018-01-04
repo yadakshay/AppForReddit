@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
       //  c.moveToFirst();
      //   tv.setVisibility(View.VISIBLE);
       //  tv.setText(c.getString(c.getColumnIndex(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_DESCRIPTION)));
-        Intent i = new Intent(MainActivity.this, SubRedditPreferenceActivity.class);
+        Intent i = new Intent(MainActivity.this, ArticleFeedActivity.class);
         startActivity(i);
     }
 
