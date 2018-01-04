@@ -131,6 +131,23 @@ public class subredditDbContentProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        int match = sUriMatcher.match(uri);
+        int subredditUpdated = 0;
+        switch (match) {
+            case SUBREDDIT_UPDATE:
+                String subredditId = uri.getPathSegments().get(1);
+                subredditUpdated = db.update(TABLE_NAME,
+                        values,
+                        subredditsContract.subredditEntry.COLUMN_SUBREDDIT_ID + " = ?",
+                        new String[]{subredditId});
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if (subredditUpdated > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return subredditUpdated;
     }
 }

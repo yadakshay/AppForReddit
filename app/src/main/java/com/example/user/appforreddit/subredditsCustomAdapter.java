@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.user.appforreddit.Database.subredditsContract;
@@ -21,7 +20,7 @@ public class subredditsCustomAdapter extends RecyclerView.Adapter<subredditsCust
     private showhideItemClickListener showHideClickListener;
     //interface for click listener
     public interface showhideItemClickListener {
-        void onListItemClick(int clickedItemIndex);
+        void onListItemClick(String clickedItemId, String ShoworHide);
     }
     //constructor
     public subredditsCustomAdapter(Cursor c, showhideItemClickListener listener){
@@ -52,25 +51,51 @@ public class subredditsCustomAdapter extends RecyclerView.Adapter<subredditsCust
     public class subredditsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView subredditName;
         Button show, hide;
-        FrameLayout flt;
+
         public subredditsViewHolder(View itemView) {
             super(itemView);
             subredditName = (TextView) itemView.findViewById(R.id.subredditName);
             show = (Button) itemView.findViewById(R.id.show);
             hide = (Button) itemView.findViewById(R.id.hide);
-            flt = (FrameLayout) itemView.findViewById(R.id.containingFrame);
-            flt.setOnClickListener(this);
+            //flt = itemView.findViewById(R.id.containingFrame);
+            show.setOnClickListener(this);
+            hide.setOnClickListener(this);
         }
 
         void bind(int listIndex) {
             subredditsCursor.moveToPosition(listIndex);
             subredditName.setText(subredditsCursor.getString(subredditsCursor.getColumnIndex(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_DISPLAYNAME_PREFIXED)));
+            String displayPref = subredditsCursor.getString(subredditsCursor.getColumnIndex(subredditsContract.subredditEntry.COLUMN_DISPLAY_SUBREDDIT));
+            if(displayPref.matches("show")){
+                hide.setVisibility(View.GONE);
+                show.setVisibility(View.VISIBLE);
+            }else{
+                show.setVisibility(View.GONE);
+                hide.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override
         public void onClick(View v) {
+            String SorH, id;
+            if((Button) v == show){
+                SorH= "show";
+            }else{
+                SorH="hide";
+            }
             int clickedPosition = getAdapterPosition();
-            showHideClickListener.onListItemClick(clickedPosition);
+            subredditsCursor.moveToPosition(clickedPosition);
+            id = subredditsCursor.getString(subredditsCursor.getColumnIndex(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_ID));
+            showHideClickListener.onListItemClick(id, SorH);
+        }
+    }
+    public void swapCursor(Cursor newCursor) {
+        // Always close the previous mCursor first
+        if (subredditsCursor != null) subredditsCursor.close();
+        subredditsCursor = newCursor;
+        if (newCursor != null) {
+            // Force the RecyclerView to refresh
+            this.notifyDataSetChanged();
         }
     }
 }
