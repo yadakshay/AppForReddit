@@ -9,4 +9,9 @@
     <string name="signInDescription">Click this button to sign in with your reddit account</string>
     <string name="imageDescription">Image View of article</string>
     <string name="dissmissCurrentDescription">Dismiss current article and request new</string>
+    <string name="crossButton">X</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="no_activities">No articles to display</string>
+    <string name="appwidget_empty">No data to display</string>
 </resources>

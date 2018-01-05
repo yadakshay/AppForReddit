@@ -1,6 +1,5 @@
 package com.example.user.appforreddit;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -106,9 +105,6 @@ public class ArticleFeedActivity extends AppCompatActivity implements
                 mAdapter = new mainArticleAapter(c, this, this);
                 mainListRecycler.setLayoutManager(layoutManager);
                 mainListRecycler.setAdapter(mAdapter);
-                SharedPreferences pref = this.getSharedPreferences("AppPref", Context.MODE_PRIVATE);
-                SharedPreferences.Editor edit = pref.edit();
-                edit.putBoolean("isFirstVisitToFeed", false);
             }
         }else{
             tv.setText("No data retrieved");
@@ -117,12 +113,10 @@ public class ArticleFeedActivity extends AppCompatActivity implements
 
     @Override
     public void onLoaderReset(Loader<ArrayList<articleCustomObject>> loader) {
-
     }
 
     @Override
     public void onListItemClick(String clickedArticleId, String url) {
-        //Toast.makeText(this, "clicked x" + clickedItemId, Toast.LENGTH_SHORT).show();
         if(clickedArticleId != null) {
             new getNewArticleTask().execute(clickedArticleId, url);
         }else{
@@ -140,9 +134,7 @@ public class ArticleFeedActivity extends AppCompatActivity implements
             String url = params[1];
             String json = NetworkUtils.getArticleForSubreddit(url, articleId, getApplicationContext());
             articleCustomObject article = NetworkUtils.extractArticleFromJson(json, url);
-         //   Log.d("ASYNCTASK", article.getArticleTitle());
             update = databaseUtils.replaceArticleWithNewArticle(article, getApplicationContext());
-         //   Log.d("ASUNCTASK", "database updated" + update);
             return article;
         }
 
@@ -153,17 +145,9 @@ public class ArticleFeedActivity extends AppCompatActivity implements
                 Uri queryUri = articleContract.articleEntry.CONTENT_URI;
                 Cursor c = getApplicationContext().getContentResolver().query(queryUri, null, null, null, null);
                 c.moveToFirst();
-              //  Log.d("ASYNCTASK", c.getString(c.getColumnIndex(articleContract.articleEntry.COLUM_ARTICLE_TITLE)));
                 mAdapter.swapArticleCursor(c);
+                c.close();
             }
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(mAdapter!=null){
-        mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -172,7 +156,6 @@ public class ArticleFeedActivity extends AppCompatActivity implements
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int clickedItem = item.getItemId();

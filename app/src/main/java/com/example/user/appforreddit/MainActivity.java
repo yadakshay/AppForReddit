@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final int SUBREDITS_LOADER_ID = 1004;
     private static final String ACCESSCODE_ID = "accessCodeId";
     private static String TAG = "RedditMainActivity";
-    private boolean tokenObtained;
     private TextView tv;
     private ProgressBar loadingBar;
     private Button signInToReddit;

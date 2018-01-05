@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
@@ -52,16 +51,13 @@ public class SubRedditPreferenceActivity extends AppCompatActivity implements su
 
     @Override
     public void onListItemClick(String clickedItemId, String s, String subredditURL) {
-      //  Toast.makeText(this, "clicked" + clickedItemId + s, Toast.LENGTH_SHORT).show();
         ContentValues cv = new ContentValues();
         Uri articeURI = articleContract.articleEntry.CONTENT_URI;
         articeURI = articeURI.buildUpon().appendPath(subredditURL).build();
         if (s.matches("show")) {
             cv.put(subredditsContract.subredditEntry.COLUMN_DISPLAY_SUBREDDIT, "hide");
-       //     int i = this.getContentResolver().delete(articeURI, null, null);
         }else{
             cv.put(subredditsContract.subredditEntry.COLUMN_DISPLAY_SUBREDDIT, "show");
-     //      new getNewArticleTask().execute(subredditURL);
         }
         Uri updateUri = subredditsContract.subredditEntry.CONTENT_URI;
         updateUri = updateUri.buildUpon().appendPath(clickedItemId).build();
@@ -71,18 +67,6 @@ public class SubRedditPreferenceActivity extends AppCompatActivity implements su
             Uri queryUri = subredditsContract.subredditEntry.CONTENT_URI;
             Cursor c = this.getContentResolver().query(queryUri, null, null, null, null);
             mAdapter.swapCursor(c);
-        }
-    }
-
-    private class getNewArticleTask extends AsyncTask<String, Void, articleCustomObject>{
-        int update;
-        @Override
-        protected articleCustomObject doInBackground(String... params) {
-            String subreddiUrl = params[0];
-            String json = NetworkUtils.getArticleForSubreddit(subreddiUrl, null, getApplicationContext());
-            articleCustomObject article = NetworkUtils.extractArticleFromJson(json, subreddiUrl);
-            databaseUtils.checkDuplicateAndInsertIndArticle(article, getApplicationContext());
-            return article;
         }
     }
     @Override

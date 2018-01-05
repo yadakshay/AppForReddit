@@ -1,0 +1,26 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/widget_margin">
+
+    <StackView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/stackWidgetView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:loopViews="true" />
+
+    <TextView
+        android:id="@+id/appwidget_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/padding_8dp"
+        android:background="@color/black"
+        android:contentDescription="@string/appwidget_empty"
+        android:text="@string/appwidget_empty"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/text_size_14sp"
+        android:textStyle="bold|italic" />
+
+</RelativeLayout>

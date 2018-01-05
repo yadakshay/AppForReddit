@@ -50,7 +50,7 @@
             android:layout_height="@dimen/padding_20dp"
             android:id="@+id/xButton"
             android:background="@color/red"
-            android:text="X"
+            android:text="@string/crossButton"
             android:textColor="@color/white"
             android:layout_gravity="top|right"
             android:contentDescription="@string/dissmissCurrentDescription"/>
