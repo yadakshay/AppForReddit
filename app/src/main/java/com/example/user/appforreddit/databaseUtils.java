@@ -72,4 +72,18 @@ public class databaseUtils {
             uri = contextForArticle.getContentResolver().insert(articleContract.articleEntry.CONTENT_URI, cv);
         }
     }
+
+    public static int replaceArticleWithNewArticle(articleCustomObject article, Context con){
+        ContentValues cv = new ContentValues();
+        Uri uri = null;
+        int updated;
+        cv.put(articleContract.articleEntry.COLUMN_ARTICLE_URL, article.getResourceURL());
+        cv.put(articleContract.articleEntry.COLUM_ARTICLE_TITLE, article.getArticleTitle());
+        cv.put(articleContract.articleEntry.COLUMN_IMAGE_THUMB, article.getArticleThumbnail());
+        cv.put(articleContract.articleEntry.COLUMN_ARTICLE_ID, article.getArticleId());
+        Uri updateUri = articleContract.articleEntry.CONTENT_URI;
+        updateUri = updateUri.buildUpon().appendPath(article.getSubredditURL()).build();
+        updated = con.getContentResolver().update(updateUri, cv, null, null);
+        return updated;
+    }
 }

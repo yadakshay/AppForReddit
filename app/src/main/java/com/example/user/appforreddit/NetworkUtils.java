@@ -197,7 +197,7 @@ public class NetworkUtils {
         return articlesList;
     }
 
-    private static String getArticleForSubreddit(String subredditURL, @Nullable String previousArticleId){
+    public static String getArticleForSubreddit(String subredditURL, @Nullable String previousArticleId){
         String RequestURL = GET_ARTICLES_BASE_URL + subredditURL + "new?limit=1";
         if(previousArticleId != null){
             RequestURL = RequestURL + "&after=t3_" + previousArticleId;
@@ -215,14 +215,14 @@ public class NetworkUtils {
         try {
             Response response = client.newCall(request).execute();
             responseJSON = response.body().string();
-          //  Log.d(TAG, responseJSON);
+         //   Log.d(TAG, responseJSON);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return responseJSON;
     }
 
-    private static articleCustomObject extractArticleFromJson(String json, String subredditURL){
+    public static articleCustomObject extractArticleFromJson(String json, String subredditURL){
         articleCustomObject articleObject = null;
         try {
             JSONObject articleJSON = new JSONObject(json);

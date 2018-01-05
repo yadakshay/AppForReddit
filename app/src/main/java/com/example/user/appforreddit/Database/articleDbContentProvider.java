@@ -132,6 +132,23 @@ public class articleDbContentProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        int match = sUriMatcher.match(uri);
+        int articleUpdated = 0;
+        switch (match) {
+            case ARTICLE_UPDATE:
+                String subredditURL = uri.getPathSegments().get(1);
+                articleUpdated = db.update(articleContract.articleEntry.TABLE_NAME,
+                        values,
+                        articleContract.articleEntry.COLUMN_SUBREDDIT_URL + " = ?",
+                        new String[]{subredditURL});
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if (articleUpdated > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return articleUpdated;
     }
 }

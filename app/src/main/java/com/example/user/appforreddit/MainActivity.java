@@ -106,14 +106,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<ArrayList<subredditCustomObject>> loader, ArrayList<subredditCustomObject> data) {
         loadingBar.setVisibility(View.GONE);
-      //  Uri queryUri = subredditsContract.subredditEntry.CONTENT_URI;
-      //  queryUri = queryUri.buildUpon().appendPath(data.get(1).getSubredditId()).build();
-        //Cursor c = getContentResolver().query(queryUri, null, null, null, null);
-      //  c.moveToFirst();
-     //   tv.setVisibility(View.VISIBLE);
-      //  tv.setText(c.getString(c.getColumnIndex(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_DESCRIPTION)));
         Intent i = new Intent(MainActivity.this, ArticleFeedActivity.class);
         startActivity(i);
+        finish();
     }
 
     @Override
