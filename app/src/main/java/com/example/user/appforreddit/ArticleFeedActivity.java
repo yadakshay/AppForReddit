@@ -1,6 +1,8 @@
 package com.example.user.appforreddit;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 public class ArticleFeedActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<ArrayList<articleCustomObject>>, mainArticleAapter.dismissItemClickListener{
     private static final int ARTICLES_LOADER_ID = 1008;
+    public static final String ARTICLE_URL_KEY = "articleKey";
     private TextView tv;
     ProgressBar spinner;
     mainArticleAapter mAdapter;
@@ -38,7 +41,6 @@ public class ArticleFeedActivity extends AppCompatActivity implements
         tv = (TextView) findViewById(R.id.textView);
         spinner = (ProgressBar) findViewById(R.id.loading_spinner);
         mainListRecycler = (RecyclerView) findViewById(R.id.mainArticleList);
-        getSupportLoaderManager().initLoader(ARTICLES_LOADER_ID, null, ArticleFeedActivity.this).forceLoad();
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +49,18 @@ public class ArticleFeedActivity extends AppCompatActivity implements
                 startActivity(i);
             }
         });
+        SharedPreferences pref = this.getSharedPreferences("AppPref", Context.MODE_PRIVATE);
+        boolean isFirstVisitToFeed = pref.getBoolean("isFirstVisitToFeed", true);
+        if(isFirstVisitToFeed){
+            getSupportLoaderManager().initLoader(ARTICLES_LOADER_ID, null, ArticleFeedActivity.this).forceLoad();
+        }else{
+            Uri queryUri = articleContract.articleEntry.CONTENT_URI;
+            Cursor c = getApplicationContext().getContentResolver().query(queryUri, null, null, null, null);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            mAdapter = new mainArticleAapter(c, this, this);
+            mainListRecycler.setLayoutManager(layoutManager);
+            mainListRecycler.setAdapter(mAdapter);
+        }
     }
 
     @Override
@@ -66,7 +80,7 @@ public class ArticleFeedActivity extends AppCompatActivity implements
                         new String[]{"show"}, null);
                 if(c != null) {
                     if(c.getCount()>0) {
-                        articlesList = NetworkUtils.getArticlesFromCursor(c);
+                        articlesList = NetworkUtils.getArticlesFromCursor(c, getApplicationContext());
                     }
                 }
                 if(articlesList != null){
@@ -95,6 +109,9 @@ public class ArticleFeedActivity extends AppCompatActivity implements
                 mAdapter = new mainArticleAapter(c, this, this);
                 mainListRecycler.setLayoutManager(layoutManager);
                 mainListRecycler.setAdapter(mAdapter);
+                SharedPreferences pref = this.getSharedPreferences("AppPref", Context.MODE_PRIVATE);
+                SharedPreferences.Editor edit = pref.edit();
+                edit.putBoolean("isFirstVisitToFeed", false);
             }
         }else{
             tv.setText("No data retrieved");
@@ -109,7 +126,13 @@ public class ArticleFeedActivity extends AppCompatActivity implements
     @Override
     public void onListItemClick(String clickedArticleId, String url) {
         //Toast.makeText(this, "clicked x" + clickedItemId, Toast.LENGTH_SHORT).show();
-        new getNewArticleTask().execute(clickedArticleId, url);
+        if(clickedArticleId != null) {
+            new getNewArticleTask().execute(clickedArticleId, url);
+        }else{
+            Intent i = new Intent(ArticleFeedActivity.this, webViewActivity.class);
+            i.putExtra(ARTICLE_URL_KEY, url);
+            startActivity(i);
+        }
     }
 
     private class getNewArticleTask extends AsyncTask<String, Void, articleCustomObject>{
@@ -118,7 +141,7 @@ public class ArticleFeedActivity extends AppCompatActivity implements
         protected articleCustomObject doInBackground(String... params) {
             String articleId = params[0];
             String url = params[1];
-            String json = NetworkUtils.getArticleForSubreddit(url, articleId);
+            String json = NetworkUtils.getArticleForSubreddit(url, articleId, getApplicationContext());
             articleCustomObject article = NetworkUtils.extractArticleFromJson(json, url);
          //   Log.d("ASYNCTASK", article.getArticleTitle());
             update = databaseUtils.replaceArticleWithNewArticle(article, getApplicationContext());
@@ -136,6 +159,14 @@ public class ArticleFeedActivity extends AppCompatActivity implements
               //  Log.d("ASYNCTASK", c.getString(c.getColumnIndex(articleContract.articleEntry.COLUM_ARTICLE_TITLE)));
                 mAdapter.swapArticleCursor(c);
             }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mAdapter!=null){
+        mAdapter.notifyDataSetChanged();
         }
     }
 }

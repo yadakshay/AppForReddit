@@ -1,6 +1,8 @@
 package com.example.user.appforreddit;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,6 +48,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         tv = (TextView) findViewById(R.id.textView);
         loadingBar = (ProgressBar) findViewById(R.id.loading_spinner);
         signInToReddit = (Button) findViewById(R.id.signin);
+        SharedPreferences pref = this.getSharedPreferences("AppPref", Context.MODE_PRIVATE);
+        boolean isLoggedIn = pref.getBoolean("isLoggedIn", false);
+        if(isLoggedIn){
+            Intent i = new Intent(MainActivity.this, ArticleFeedActivity.class);
+            startActivity(i);
+            finish();
+        }
     }
 
     public void startSignIn(View view) {
@@ -106,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<ArrayList<subredditCustomObject>> loader, ArrayList<subredditCustomObject> data) {
         loadingBar.setVisibility(View.GONE);
+
         Intent i = new Intent(MainActivity.this, ArticleFeedActivity.class);
         startActivity(i);
         finish();
@@ -114,5 +124,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader loader) {
 
+    }
+
+    public void refreshToken(View view) {
+        NetworkUtils.refreshAccessToken(this);
     }
 }

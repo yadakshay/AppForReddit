@@ -34,14 +34,14 @@
             android:name=".Database.subredditDbContentProvider"
             android:authorities="com.example.user.appforreddit"
             android:exported="false" />
-
         <provider
             android:name=".Database.articleDbContentProvider"
             android:authorities="com.example.user.appforreddit.articleDb"
             android:exported="false" />
 
         <activity android:name=".SubRedditPreferenceActivity" />
-        <activity android:name=".ArticleFeedActivity"></activity>
+        <activity android:name=".ArticleFeedActivity" />
+        <activity android:name=".webViewActivity"></activity>
     </application>
 
 </manifest>

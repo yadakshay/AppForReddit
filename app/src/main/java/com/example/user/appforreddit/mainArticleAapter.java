@@ -89,19 +89,22 @@ public class mainArticleAapter extends RecyclerView.Adapter<mainArticleAapter.ma
             }
             articleTitleHolder.setText(articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUM_ARTICLE_TITLE)));
             crossButton.setOnClickListener(this);
-          //  articleContainer.setOnTouchListener(this);
+            articleContainer.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
             articlesCursor.moveToPosition(clickedPosition);
-            if((Button) v == crossButton) {
+            if(v == crossButton) {
                 spinner.setVisibility(View.VISIBLE);
                 articleFrame.setVisibility(View.GONE);
                 String id = articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUMN_ARTICLE_ID));
                 String subUrl = articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUMN_SUBREDDIT_URL));
                 mItemClickListener.onListItemClick(id, subUrl);
+            }else if(v == articleContainer){
+                mItemClickListener.onListItemClick(null,
+                        articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUMN_ARTICLE_URL)));
             }
         }
     }

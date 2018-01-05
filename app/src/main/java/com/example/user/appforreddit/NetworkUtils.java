@@ -24,8 +24,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.user.appforreddit.databaseUtils.context;
-
 /**
  * Created by user on 03-01-2018.
  */
@@ -129,6 +127,7 @@ public class NetworkUtils {
             SharedPreferences.Editor edit = pref.edit();
             edit.putString("token", accessToken);
             edit.putString("refreshToken", refreshToken);
+            edit.putBoolean("isLoggedIn", true);
             edit.commit();
             if(accessToken != null || accessToken.length() >0) {
                 obtainedToken = true;
@@ -138,6 +137,58 @@ public class NetworkUtils {
         }
         return obtainedToken;
 }
+
+    public static boolean refreshAccessToken(final Context context){
+        obtainedToken =false;
+        final SharedPreferences pref = context.getSharedPreferences("AppPref", Context.MODE_PRIVATE);
+        OkHttpClient client = new OkHttpClient();
+        String authString = CLIENT_ID + ":";
+        Response response = null;
+        String json = "";
+        String encodedAuthString = Base64.encodeToString(authString.getBytes(),
+                Base64.NO_WRAP);
+        String refreshToken =pref.getString("refreshToken", "");
+        Request request = new Request.Builder()
+                .addHeader("User-Agent", "Sample App")
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .url(ACCESS_TOKEN_URL)
+                .post(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"),
+                        "grant_type=refresh_token&refresh_token=" + refreshToken))
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e(TAG, "ERROR: " + e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String json = response.body().string();
+
+                JSONObject data = null;
+                try {
+                    data = new JSONObject(json);
+                    String accessToken = data.optString("access_token");
+                    //String refreshToken = data.optString("refresh_token");
+
+                    Log.d(TAG, "Refreshed Access Token = " + accessToken);
+                    //       Toast.makeText(MainActivity.this, accessToken, Toast.LENGTH_SHORT).show();
+                   // Log.d(TAG, "Refresh Token = " + refreshToken);
+                    SharedPreferences.Editor edit = pref.edit();
+                    edit.putString("token", accessToken);
+                   // edit.putString("refreshToken", refreshToken);
+                  //  edit.commit();
+                    // Log.d(TAG, "Flag is set true");
+                    obtainedToken = true;
+                    //makeSubredditCall(context);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        return obtainedToken;
+    }
 
     public static String makeSubredditCall(Context context){
         OkHttpClient client = new OkHttpClient();
@@ -185,26 +236,26 @@ public class NetworkUtils {
         return subredditList;
     }
 
-    public static ArrayList<articleCustomObject> getArticlesFromCursor(Cursor c) {
+    public static ArrayList<articleCustomObject> getArticlesFromCursor(Cursor c, Context cnt) {
         ArrayList<articleCustomObject> articlesList = new ArrayList<articleCustomObject>();
         for(int i=0; i<c.getCount(); i++){
             c.moveToPosition(i);
             String subredditUrl = c.getString(c.getColumnIndex(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_URL));
-            String json = getArticleForSubreddit(subredditUrl, null);
+            String json = getArticleForSubreddit(subredditUrl, null, cnt);
             articleCustomObject a = extractArticleFromJson(json, subredditUrl);
             articlesList.add(a);
         }
         return articlesList;
     }
 
-    public static String getArticleForSubreddit(String subredditURL, @Nullable String previousArticleId){
+    public static String getArticleForSubreddit(String subredditURL, @Nullable String previousArticleId, Context cntxt){
         String RequestURL = GET_ARTICLES_BASE_URL + subredditURL + "new?limit=1";
         if(previousArticleId != null){
             RequestURL = RequestURL + "&after=t3_" + previousArticleId;
         }
         Log.d(TAG, RequestURL);
         OkHttpClient client = new OkHttpClient();
-        SharedPreferences pref = context.getSharedPreferences("AppPref",Context.MODE_PRIVATE);
+        SharedPreferences pref = cntxt.getSharedPreferences("AppPref",Context.MODE_PRIVATE);
         String token =pref.getString("token", "");
         String responseJSON = null;
         Request request = new Request.Builder()
