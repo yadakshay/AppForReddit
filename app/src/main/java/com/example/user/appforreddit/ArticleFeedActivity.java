@@ -54,18 +54,9 @@ public class ArticleFeedActivity extends AppCompatActivity implements
                 finish();
             }
         });
-        //SharedPreferences pref = this.getSharedPreferences("AppPref", Context.MODE_PRIVATE);
-        //boolean isFirstVisitToFeed = pref.getBoolean("isFirstVisitToFeed", true);
-      //  if(isFirstVisitToFeed){
+        if(getIntent() != null) {
             getSupportLoaderManager().initLoader(ARTICLES_LOADER_ID, null, ArticleFeedActivity.this).forceLoad();
-     //   }else{
-       //     Uri queryUri = articleContract.articleEntry.CONTENT_URI;
-         //   Cursor c = getApplicationContext().getContentResolver().query(queryUri, null, null, null, null);
-        //    LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        //    mAdapter = new mainArticleAapter(c, this, this);
-        //    mainListRecycler.setLayoutManager(layoutManager);
-       //     mainListRecycler.setAdapter(mAdapter);
-      //  }
+        }
     }
 
     @Override
@@ -104,6 +95,7 @@ public class ArticleFeedActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(Loader<ArrayList<articleCustomObject>> loader, ArrayList<articleCustomObject> data) {
         spinner.setVisibility(View.GONE);
+        mainListRecycler.setVisibility(View.VISIBLE);
         if(data != null) {
             if(data.size()>0) {
                 Uri queryUri = articleContract.articleEntry.CONTENT_URI;

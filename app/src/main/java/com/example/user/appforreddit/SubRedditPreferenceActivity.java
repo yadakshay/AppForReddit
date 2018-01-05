@@ -11,9 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-
+import com.google.android.gms.ads.AdRequest;
 import com.example.user.appforreddit.Database.articleContract;
 import com.example.user.appforreddit.Database.subredditsContract;
+import com.google.android.gms.ads.AdView;
 
 public class SubRedditPreferenceActivity extends AppCompatActivity implements subredditsCustomAdapter.showhideItemClickListener{
     private RecyclerView subredditRV;
@@ -23,6 +24,11 @@ public class SubRedditPreferenceActivity extends AppCompatActivity implements su
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sub_reddit_preference);
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build();
+        mAdView.loadAd(adRequest);
         subredditRV = (RecyclerView) findViewById(R.id.recyclerView_subreddits);
         Uri queryUri = subredditsContract.subredditEntry.CONTENT_URI;
         Cursor c = this.getContentResolver().query(queryUri, null, null, null, null);

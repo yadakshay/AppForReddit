@@ -2,11 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/padding_4dp">
+    android:padding="@dimen/padding_4dp"
+    android:background="@color/colorBack1">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/subredditNameHolder"/>
+        android:id="@+id/subredditNameHolder"
+        android:textStyle="bold"/>
     <ProgressBar
         android:id="@+id/loading_spinner"
         style="@style/Widget.AppCompat.ProgressBar"
@@ -17,39 +19,39 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_8dp"
         android:background="@color/colorBack"
         android:id="@+id/articleFrameLayout">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:id="@+id/articleHolder">
+            android:id="@+id/articleHolder"
+            android:layout_gravity="center"
+            android:padding="@dimen/padding_4dp">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/articleThumbnail"/>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:id="@+id/articleThumbnail"
+                android:layout_gravity="center_vertical"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/articleTitleHolder"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/articleExtraHolder"/>
+                    android:id="@+id/articleTitleHolder"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/padding_4dp"/>
             </LinearLayout>
-        </LinearLayout>
         <Button
-            android:layout_width="@dimen/padding_10dp"
-            android:layout_height="@dimen/padding_10dp"
+            android:layout_width="@dimen/padding_20dp"
+            android:layout_height="@dimen/padding_20dp"
             android:id="@+id/xButton"
             android:background="@color/red"
             android:text="X"
             android:textColor="@color/white"
             android:layout_gravity="top|right" />
     </FrameLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryExtraDark"/>
 </LinearLayout>

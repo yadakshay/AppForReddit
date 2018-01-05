@@ -11,7 +11,9 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:id="@+id/subredditName"
-        android:paddingLeft="@dimen/keyline1"/>
+        android:layout_marginLeft="@dimen/keyline1"
+        android:layout_gravity="center_vertical"
+        android:textSize="@dimen/text_size_18sp"/>
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

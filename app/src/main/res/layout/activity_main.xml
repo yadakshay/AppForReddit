@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.user.appforreddit.MainActivity">
+    tools:context="com.example.user.appforreddit.MainActivity"
+    android:background="@color/colorBack1">
 
     <TextView
         android:layout_width="wrap_content"
@@ -19,16 +21,25 @@
 
     <Button android:id="@+id/signin"
         android:text="Sign In With Reddit"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="startSignIn"/>
-
+        android:onClick="startSignIn"
+        android:layout_gravity="center"
+        android:background="@color/colorAccent"
+        android:padding="@dimen/padding_4dp"
+        android:textColor="@color/white"/>
     <ProgressBar
         android:id="@+id/loading_spinner"
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:visibility="gone"/>
-
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id"/>
 </FrameLayout>
