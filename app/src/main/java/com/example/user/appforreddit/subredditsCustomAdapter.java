@@ -20,7 +20,7 @@ public class subredditsCustomAdapter extends RecyclerView.Adapter<subredditsCust
     private showhideItemClickListener showHideClickListener;
     //interface for click listener
     public interface showhideItemClickListener {
-        void onListItemClick(String clickedItemId, String ShoworHide);
+        void onListItemClick(String clickedItemId, String ShoworHide, String SubredditURL);
     }
     //constructor
     public subredditsCustomAdapter(Cursor c, showhideItemClickListener listener){
@@ -77,7 +77,7 @@ public class subredditsCustomAdapter extends RecyclerView.Adapter<subredditsCust
 
         @Override
         public void onClick(View v) {
-            String SorH, id;
+            String SorH, id, subredditURL;
             if((Button) v == show){
                 SorH= "show";
             }else{
@@ -86,7 +86,8 @@ public class subredditsCustomAdapter extends RecyclerView.Adapter<subredditsCust
             int clickedPosition = getAdapterPosition();
             subredditsCursor.moveToPosition(clickedPosition);
             id = subredditsCursor.getString(subredditsCursor.getColumnIndex(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_ID));
-            showHideClickListener.onListItemClick(id, SorH);
+            subredditURL = subredditsCursor.getString(subredditsCursor.getColumnIndex(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_URL));
+            showHideClickListener.onListItemClick(id, SorH, subredditURL);
         }
     }
     public void swapCursor(Cursor newCursor) {

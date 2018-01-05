@@ -72,6 +72,22 @@ public class databaseUtils {
             uri = contextForArticle.getContentResolver().insert(articleContract.articleEntry.CONTENT_URI, cv);
         }
     }
+    public static void checkDuplicateAndInsertIndArticle(articleCustomObject article, Context contxt){
+        ContentValues cv = new ContentValues();
+        Uri uri = null;
+        cv.put(articleContract.articleEntry.COLUMN_ARTICLE_URL, article.getResourceURL());
+        cv.put(articleContract.articleEntry.COLUM_ARTICLE_TITLE, article.getArticleTitle());
+        cv.put(articleContract.articleEntry.COLUMN_IMAGE_THUMB, article.getArticleThumbnail());
+        cv.put(articleContract.articleEntry.COLUMN_ARTICLE_ID, article.getArticleId());
+        cv.put(articleContract.articleEntry.COLUMN_SUBREDDIT_URL, article.getSubredditURL());
+        Uri queryUri = articleContract.articleEntry.CONTENT_URI;
+        queryUri = queryUri.buildUpon().appendPath(article.getSubredditURL()).build();
+        Cursor c = contxt.getContentResolver().query(queryUri, null, null, null, null);
+        if(c !=null && c.getCount()>0){//do nothing
+        }else{
+            uri = contextForArticle.getContentResolver().insert(articleContract.articleEntry.CONTENT_URI, cv);
+        }
+    }
 
     public static int replaceArticleWithNewArticle(articleCustomObject article, Context con){
         ContentValues cv = new ContentValues();

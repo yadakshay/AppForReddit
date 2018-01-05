@@ -42,7 +42,7 @@ public class NetworkUtils {
 
     public static boolean getAccessToken(String code, final Context context) {
         obtainedToken = false;
-        final SharedPreferences pref = context.getSharedPreferences("AppPref", Context.MODE_PRIVATE);
+        final SharedPreferences pref = context.getSharedPreferences("AppPref", 0);
         OkHttpClient client = new OkHttpClient();
         String authString = CLIENT_ID + ":";
         String encodedAuthString = Base64.encodeToString(authString.getBytes(),
@@ -93,7 +93,7 @@ public class NetworkUtils {
 
     public static boolean getSyncAccessToken(String code, final Context context){
         obtainedToken =false;
-        final SharedPreferences pref = context.getSharedPreferences("AppPref", Context.MODE_PRIVATE);
+        final SharedPreferences pref = context.getSharedPreferences("AppPref", 0);
         OkHttpClient client = new OkHttpClient();
         String authString = CLIENT_ID + ":";
         Response response = null;
@@ -140,11 +140,9 @@ public class NetworkUtils {
 
     public static boolean refreshAccessToken(final Context context){
         obtainedToken =false;
-        final SharedPreferences pref = context.getSharedPreferences("AppPref", Context.MODE_PRIVATE);
+        final SharedPreferences pref = context.getSharedPreferences("AppPref", 0);
         OkHttpClient client = new OkHttpClient();
         String authString = CLIENT_ID + ":";
-        Response response = null;
-        String json = "";
         String encodedAuthString = Base64.encodeToString(authString.getBytes(),
                 Base64.NO_WRAP);
         String refreshToken =pref.getString("refreshToken", "");
@@ -170,18 +168,11 @@ public class NetworkUtils {
                 try {
                     data = new JSONObject(json);
                     String accessToken = data.optString("access_token");
-                    //String refreshToken = data.optString("refresh_token");
-
                     Log.d(TAG, "Refreshed Access Token = " + accessToken);
-                    //       Toast.makeText(MainActivity.this, accessToken, Toast.LENGTH_SHORT).show();
-                   // Log.d(TAG, "Refresh Token = " + refreshToken);
                     SharedPreferences.Editor edit = pref.edit();
                     edit.putString("token", accessToken);
-                   // edit.putString("refreshToken", refreshToken);
-                  //  edit.commit();
-                    // Log.d(TAG, "Flag is set true");
+                    edit.commit();
                     obtainedToken = true;
-                    //makeSubredditCall(context);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -189,10 +180,48 @@ public class NetworkUtils {
         });
         return obtainedToken;
     }
+    public static boolean refreshSyncAccessToken(final Context context){
+        obtainedToken =false;
+        final SharedPreferences pref = context.getSharedPreferences("AppPref", 0);
+        OkHttpClient client = new OkHttpClient();
+        String authString = CLIENT_ID + ":";
+        Response response = null;
+        String json = "";
+        String encodedAuthString = Base64.encodeToString(authString.getBytes(),
+                Base64.NO_WRAP);
+        String refreshToken =pref.getString("refreshToken", "");
+        Request request = new Request.Builder()
+                .addHeader("User-Agent", "Sample App")
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .url(ACCESS_TOKEN_URL)
+                .post(RequestBody.create(MediaType.parse("application/x-www-form-urlencoded"),
+                        "grant_type=refresh_token&refresh_token=" + refreshToken))
+                .build();
 
+        try {
+            response = client.newCall(request).execute();
+            json = response.body().string();
+
+            JSONObject data = null;
+            try {
+                data = new JSONObject(json);
+                String accessToken = data.optString("access_token");
+                Log.d(TAG, "Refreshed Access Token = " + accessToken);
+                SharedPreferences.Editor edit = pref.edit();
+                edit.putString("token", accessToken);
+                edit.commit();
+                obtainedToken = true;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return obtainedToken;
+    }
     public static String makeSubredditCall(Context context){
         OkHttpClient client = new OkHttpClient();
-        SharedPreferences pref = context.getSharedPreferences("AppPref",Context.MODE_PRIVATE);
+        SharedPreferences pref = context.getSharedPreferences("AppPref",0);
         String token =pref.getString("token", "");
         String responseJSON = null;
         Request request = new Request.Builder()
@@ -255,7 +284,7 @@ public class NetworkUtils {
         }
         Log.d(TAG, RequestURL);
         OkHttpClient client = new OkHttpClient();
-        SharedPreferences pref = cntxt.getSharedPreferences("AppPref",Context.MODE_PRIVATE);
+        SharedPreferences pref = cntxt.getSharedPreferences("AppPref",0);
         String token =pref.getString("token", "");
         String responseJSON = null;
         Request request = new Request.Builder()

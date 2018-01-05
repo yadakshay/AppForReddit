@@ -15,6 +15,8 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,6 +24,8 @@ import android.widget.TextView;
 import com.example.user.appforreddit.Database.articleContract;
 import com.example.user.appforreddit.Database.articleDbHelper;
 import com.example.user.appforreddit.Database.subredditsContract;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
 
 import java.util.ArrayList;
 
@@ -47,20 +51,21 @@ public class ArticleFeedActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 Intent i = new Intent(ArticleFeedActivity.this, SubRedditPreferenceActivity.class);
                 startActivity(i);
+                finish();
             }
         });
-        SharedPreferences pref = this.getSharedPreferences("AppPref", Context.MODE_PRIVATE);
-        boolean isFirstVisitToFeed = pref.getBoolean("isFirstVisitToFeed", true);
-        if(isFirstVisitToFeed){
+        //SharedPreferences pref = this.getSharedPreferences("AppPref", Context.MODE_PRIVATE);
+        //boolean isFirstVisitToFeed = pref.getBoolean("isFirstVisitToFeed", true);
+      //  if(isFirstVisitToFeed){
             getSupportLoaderManager().initLoader(ARTICLES_LOADER_ID, null, ArticleFeedActivity.this).forceLoad();
-        }else{
-            Uri queryUri = articleContract.articleEntry.CONTENT_URI;
-            Cursor c = getApplicationContext().getContentResolver().query(queryUri, null, null, null, null);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-            mAdapter = new mainArticleAapter(c, this, this);
-            mainListRecycler.setLayoutManager(layoutManager);
-            mainListRecycler.setAdapter(mAdapter);
-        }
+     //   }else{
+       //     Uri queryUri = articleContract.articleEntry.CONTENT_URI;
+         //   Cursor c = getApplicationContext().getContentResolver().query(queryUri, null, null, null, null);
+        //    LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        //    mAdapter = new mainArticleAapter(c, this, this);
+        //    mainListRecycler.setLayoutManager(layoutManager);
+       //     mainListRecycler.setAdapter(mAdapter);
+      //  }
     }
 
     @Override
@@ -103,8 +108,6 @@ public class ArticleFeedActivity extends AppCompatActivity implements
             if(data.size()>0) {
                 Uri queryUri = articleContract.articleEntry.CONTENT_URI;
                 Cursor c = getApplicationContext().getContentResolver().query(queryUri, null, null, null, null);
-               // c.moveToFirst();
-               // tv.setText(c.getString(c.getColumnIndex(articleContract.articleEntry.COLUM_ARTICLE_TITLE)));
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
                 mAdapter = new mainArticleAapter(c, this, this);
                 mainListRecycler.setLayoutManager(layoutManager);
@@ -168,5 +171,31 @@ public class ArticleFeedActivity extends AppCompatActivity implements
         if(mAdapter!=null){
         mAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int clickedItem = item.getItemId();
+        if(clickedItem == R.id.logout){
+            SharedPreferences pref = this.getSharedPreferences("AppPref", 0);
+            SharedPreferences.Editor edit = pref.edit();
+            edit.putString("token", "");
+            edit.putString("refreshToken", "");
+            edit.putBoolean("isLoggedIn", false);
+            edit.commit();
+            FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
+            dispatcher.cancel("refresh-tag"); // cancel the firebase job Dispatcher
+            Intent i = new Intent(ArticleFeedActivity.this, MainActivity.class);
+            startActivity(i);
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

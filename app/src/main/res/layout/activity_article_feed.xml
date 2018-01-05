@@ -27,5 +27,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:src="@drawable/plussign"
-        android:layout_margin="@dimen/padding_8dp"/>
+        android:layout_margin="@dimen/padding_16dp"/>
 </FrameLayout>

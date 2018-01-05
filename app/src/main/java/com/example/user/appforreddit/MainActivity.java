@@ -1,6 +1,5 @@
 package com.example.user.appforreddit;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,6 +16,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.user.appforreddit.Database.subredditDbHelper;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 
 import java.util.ArrayList;
 
@@ -48,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         tv = (TextView) findViewById(R.id.textView);
         loadingBar = (ProgressBar) findViewById(R.id.loading_spinner);
         signInToReddit = (Button) findViewById(R.id.signin);
-        SharedPreferences pref = this.getSharedPreferences("AppPref", Context.MODE_PRIVATE);
+        SharedPreferences pref = this.getSharedPreferences("AppPref", 0);
         boolean isLoggedIn = pref.getBoolean("isLoggedIn", false);
         if(isLoggedIn){
             Intent i = new Intent(MainActivity.this, ArticleFeedActivity.class);
@@ -66,18 +71,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onResume() {
         super.onResume();
-        if(getIntent()!=null && getIntent().getAction().equals(Intent.ACTION_VIEW)) {
-            Uri uri = getIntent().getData();
-            if(uri.getQueryParameter("error") != null) {
-                String error = uri.getQueryParameter("error");
-                Log.e("TAG:", "An error has occurred : " + error);
-            } else {
-                String state = uri.getQueryParameter("state");
-                if(state.equals(STATE)) {
-                    String code = uri.getQueryParameter("code");
-                    Bundle bundleForLoader = new Bundle();
-                    bundleForLoader.putString(ACCESSCODE_ID, code);
-                    getSupportLoaderManager().initLoader(SUBREDITS_LOADER_ID, bundleForLoader, MainActivity.this).forceLoad();
+        if(getIntent()!=null) {
+            if(getIntent().getAction() != null) {
+                if (getIntent().getAction().equals(Intent.ACTION_VIEW)) {
+                    Uri uri = getIntent().getData();
+                    if (uri.getQueryParameter("error") != null) {
+                        String error = uri.getQueryParameter("error");
+                        Log.e("TAG:", "An error has occurred : " + error);
+                    } else {
+                        String state = uri.getQueryParameter("state");
+                        if (state.equals(STATE)) {
+                            String code = uri.getQueryParameter("code");
+                            Bundle bundleForLoader = new Bundle();
+                            bundleForLoader.putString(ACCESSCODE_ID, code);
+                            getSupportLoaderManager().initLoader(SUBREDITS_LOADER_ID, bundleForLoader, MainActivity.this).forceLoad();
+                        }
+                    }
                 }
             }
         }
@@ -115,6 +124,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<ArrayList<subredditCustomObject>> loader, ArrayList<subredditCustomObject> data) {
         loadingBar.setVisibility(View.GONE);
+        // schedule jobs on first login
+        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
+        Job myJob = dispatcher.newJobBuilder()
+                .setService(refreshTokenJobService.class) // the JobService that will be called
+                .setTag("refresh-tag")        // uniquely identifies the job
+                .setRecurring(true)
+                .setLifetime(Lifetime.UNTIL_NEXT_BOOT) // don't persist past a device reboot
+                .setTrigger(Trigger.executionWindow(3000, 3500))// start between 3000 and 3500 seconds from now
+                .setReplaceCurrent(true)
+                .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
+                .build();
+        dispatcher.mustSchedule(myJob);
 
         Intent i = new Intent(MainActivity.this, ArticleFeedActivity.class);
         startActivity(i);
@@ -123,10 +144,5 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader loader) {
-
-    }
-
-    public void refreshToken(View view) {
-        NetworkUtils.refreshAccessToken(this);
     }
 }
