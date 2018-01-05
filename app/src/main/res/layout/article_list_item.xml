@@ -27,19 +27,23 @@
             android:orientation="horizontal"
             android:id="@+id/articleHolder"
             android:layout_gravity="center"
-            android:padding="@dimen/padding_4dp">
+            android:paddingLeft="@dimen/padding_4dp"
+            android:paddingRight="@dimen/padding_4dp"
+            android:paddingTop="@dimen/padding_10dp"
+            android:paddingBottom="@dimen/padding_10dp">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/articleThumbnail"
-                android:layout_gravity="center_vertical"/>
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/imageDescription"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/articleTitleHolder"
                     android:textColor="@color/black"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/padding_4dp"/>
+                    android:layout_marginLeft="@dimen/padding_8dp"/>
             </LinearLayout>
         <Button
             android:layout_width="@dimen/padding_20dp"
@@ -48,7 +52,8 @@
             android:background="@color/red"
             android:text="X"
             android:textColor="@color/white"
-            android:layout_gravity="top|right" />
+            android:layout_gravity="top|right"
+            android:contentDescription="@string/dissmissCurrentDescription"/>
     </FrameLayout>
     <View
         android:layout_width="match_parent"

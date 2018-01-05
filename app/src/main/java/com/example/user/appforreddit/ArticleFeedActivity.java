@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -33,6 +34,7 @@ public class ArticleFeedActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<ArrayList<articleCustomObject>>, mainArticleAapter.dismissItemClickListener{
     private static final int ARTICLES_LOADER_ID = 1008;
     public static final String ARTICLE_URL_KEY = "articleKey";
+    private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
     private TextView tv;
     ProgressBar spinner;
     mainArticleAapter mAdapter;
@@ -189,5 +191,18 @@ public class ArticleFeedActivity extends AppCompatActivity implements
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+        mainListRecycler.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mainListRecycler.getLayoutManager().onSaveInstanceState());
     }
 }

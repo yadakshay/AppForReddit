@@ -6,19 +6,22 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import com.google.android.gms.ads.AdRequest;
+
 import com.example.user.appforreddit.Database.articleContract;
 import com.example.user.appforreddit.Database.subredditsContract;
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 public class SubRedditPreferenceActivity extends AppCompatActivity implements subredditsCustomAdapter.showhideItemClickListener{
     private RecyclerView subredditRV;
     private subredditsCustomAdapter mAdapter;
+    private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
     FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,5 +84,16 @@ public class SubRedditPreferenceActivity extends AppCompatActivity implements su
             databaseUtils.checkDuplicateAndInsertIndArticle(article, getApplicationContext());
             return article;
         }
+    }
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+        subredditRV.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, subredditRV.getLayoutManager().onSaveInstanceState());
     }
 }

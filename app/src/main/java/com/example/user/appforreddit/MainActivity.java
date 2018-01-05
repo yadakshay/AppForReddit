@@ -1,8 +1,11 @@
 package com.example.user.appforreddit;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -52,20 +55,31 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
-        mAdView.loadAd(adRequest);
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
         tv = (TextView) findViewById(R.id.textView);
         loadingBar = (ProgressBar) findViewById(R.id.loading_spinner);
         signInToReddit = (Button) findViewById(R.id.signin);
-        SharedPreferences pref = this.getSharedPreferences("AppPref", 0);
-        boolean isLoggedIn = pref.getBoolean("isLoggedIn", false);
-        if(isLoggedIn){
-            Intent i = new Intent(MainActivity.this, ArticleFeedActivity.class);
-            startActivity(i);
-            finish();
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        if(isConnected) {
+            signInToReddit.setVisibility(View.VISIBLE);
+            tv.setVisibility(View.GONE);
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .build();
+            mAdView.loadAd(adRequest);
+            SharedPreferences pref = this.getSharedPreferences("AppPref", 0);
+            boolean isLoggedIn = pref.getBoolean("isLoggedIn", false);
+            if (isLoggedIn) {
+                Intent i = new Intent(MainActivity.this, ArticleFeedActivity.class);
+                startActivity(i);
+                finish();
+            }
+        }else{
+            tv.setVisibility(View.VISIBLE);
+            signInToReddit.setVisibility(View.GONE);
         }
     }
 
