@@ -3,7 +3,7 @@
     <string name="showString">Show</string>
     <string name="hideString">Hide</string>
     <string name="logout">Logout</string>
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="signInWithReddit">Sign In With Reddit</string>
     <string name="noNetwork">There seems to be some problem with your connection. Please try again after sometime.</string>
     <string name="signInDescription">Click this button to sign in with your reddit account</string>

@@ -16,11 +16,11 @@ import android.support.annotation.Nullable;
  * Created by Akshay on 04-01-2018.
  */
 
-public class articleDbContentProvider extends ContentProvider {
+public class ArticleDbContentProvider extends ContentProvider {
     public static final int ARTICLE = 105;
     public static final int ARTICLE_UPDATE = 106;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private articleDbHelper mDbHelper;
+    private ArticleDbHelper mDbHelper;
 
     private static UriMatcher buildUriMatcher() {
         // Initialize a UriMatcher with no matches by passing in NO_MATCH to the constructor
@@ -31,15 +31,15 @@ public class articleDbContentProvider extends ContentProvider {
           The two calls below add matches for the task directory and a single item by ID.
          */
         ;
-        uriMatcher.addURI(articleContract.AUTHORITY, articleContract.PATH_TASK, ARTICLE);
-        uriMatcher.addURI(articleContract.AUTHORITY, articleContract.PATH_TASK + "/*", ARTICLE_UPDATE);
+        uriMatcher.addURI(ArticleContract.AUTHORITY, ArticleContract.PATH_TASK, ARTICLE);
+        uriMatcher.addURI(ArticleContract.AUTHORITY, ArticleContract.PATH_TASK + "/*", ARTICLE_UPDATE);
         return uriMatcher;
     }
 
     @Override
     public boolean onCreate() {
         Context context = getContext();
-        mDbHelper = new articleDbHelper(context);
+        mDbHelper = new ArticleDbHelper(context);
         return true;
     }
 
@@ -51,7 +51,7 @@ public class articleDbContentProvider extends ContentProvider {
         Cursor retCursor;
         switch (match) {
             case ARTICLE:
-                retCursor = db.query(articleContract.articleEntry.TABLE_NAME,
+                retCursor = db.query(ArticleContract.articleEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -61,9 +61,9 @@ public class articleDbContentProvider extends ContentProvider {
                 break;
             case ARTICLE_UPDATE:
                 String subredditUrl = uri.getPathSegments().get(1);
-                retCursor = db.query(articleContract.articleEntry.TABLE_NAME,
+                retCursor = db.query(ArticleContract.articleEntry.TABLE_NAME,
                         null,
-                        articleContract.articleEntry.COLUMN_SUBREDDIT_URL + " = ?",
+                        ArticleContract.articleEntry.COLUMN_SUBREDDIT_URL + " = ?",
                         new String[]{subredditUrl},
                         null,
                         null,
@@ -91,9 +91,9 @@ public class articleDbContentProvider extends ContentProvider {
 
         switch (match) {
             case ARTICLE:
-                long id = db.insert(articleContract.articleEntry.TABLE_NAME, null, values);
+                long id = db.insert(ArticleContract.articleEntry.TABLE_NAME, null, values);
                 if (id > 0) {
-                    returnUri = ContentUris.withAppendedId(articleContract.articleEntry.CONTENT_URI, id);
+                    returnUri = ContentUris.withAppendedId(ArticleContract.articleEntry.CONTENT_URI, id);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
@@ -117,8 +117,8 @@ public class articleDbContentProvider extends ContentProvider {
                 // Get the task ID from the URI path
                 String subredditUrl = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
-                articleDeleted = db.delete(articleContract.articleEntry.TABLE_NAME,
-                        articleContract.articleEntry.COLUMN_SUBREDDIT_URL + " = ?",
+                articleDeleted = db.delete(ArticleContract.articleEntry.TABLE_NAME,
+                        ArticleContract.articleEntry.COLUMN_SUBREDDIT_URL + " = ?",
                         new String[]{subredditUrl});
                 break;
             default:
@@ -139,9 +139,9 @@ public class articleDbContentProvider extends ContentProvider {
         switch (match) {
             case ARTICLE_UPDATE:
                 String subredditURL = uri.getPathSegments().get(1);
-                articleUpdated = db.update(articleContract.articleEntry.TABLE_NAME,
+                articleUpdated = db.update(ArticleContract.articleEntry.TABLE_NAME,
                         values,
-                        articleContract.articleEntry.COLUMN_SUBREDDIT_URL + " = ?",
+                        ArticleContract.articleEntry.COLUMN_SUBREDDIT_URL + " = ?",
                         new String[]{subredditURL});
                 break;
             default:

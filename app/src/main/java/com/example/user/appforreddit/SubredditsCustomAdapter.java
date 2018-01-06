@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.user.appforreddit.Database.subredditsContract;
+import com.example.user.appforreddit.Database.SubredditsContract;
 
 /**
  * Created by Akshay on 04-01-2018.
@@ -67,8 +67,8 @@ public class SubredditsCustomAdapter extends RecyclerView.Adapter<SubredditsCust
 
         void bind(int listIndex) {
             subredditsCursor.moveToPosition(listIndex);
-            subredditName.setText(subredditsCursor.getString(subredditsCursor.getColumnIndex(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_DISPLAYNAME_PREFIXED)));
-            String displayPref = subredditsCursor.getString(subredditsCursor.getColumnIndex(subredditsContract.subredditEntry.COLUMN_DISPLAY_SUBREDDIT));
+            subredditName.setText(subredditsCursor.getString(subredditsCursor.getColumnIndex(SubredditsContract.subredditEntry.COLUMN_SUBREDDIT_DISPLAYNAME_PREFIXED)));
+            String displayPref = subredditsCursor.getString(subredditsCursor.getColumnIndex(SubredditsContract.subredditEntry.COLUMN_DISPLAY_SUBREDDIT));
             if (displayPref.matches("show")) {
                 hide.setVisibility(View.GONE);
                 show.setVisibility(View.VISIBLE);
@@ -88,8 +88,8 @@ public class SubredditsCustomAdapter extends RecyclerView.Adapter<SubredditsCust
             }
             int clickedPosition = getAdapterPosition();
             subredditsCursor.moveToPosition(clickedPosition);
-            id = subredditsCursor.getString(subredditsCursor.getColumnIndex(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_ID));
-            subredditURL = subredditsCursor.getString(subredditsCursor.getColumnIndex(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_URL));
+            id = subredditsCursor.getString(subredditsCursor.getColumnIndex(SubredditsContract.subredditEntry.COLUMN_SUBREDDIT_ID));
+            subredditURL = subredditsCursor.getString(subredditsCursor.getColumnIndex(SubredditsContract.subredditEntry.COLUMN_SUBREDDIT_URL));
             showHideClickListener.onListItemClick(id, SorH, subredditURL);
         }
     }

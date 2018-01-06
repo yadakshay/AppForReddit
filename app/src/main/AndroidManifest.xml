@@ -32,11 +32,11 @@
         </activity>
 
         <provider
-            android:name=".Database.subredditDbContentProvider"
+            android:name=".Database.SubredditDbContentProvider"
             android:authorities="com.example.user.appforreddit"
             android:exported="true" />
         <provider
-            android:name=".Database.articleDbContentProvider"
+            android:name=".Database.ArticleDbContentProvider"
             android:authorities="com.example.user.appforreddit.articleDb"
             android:exported="true" />
 

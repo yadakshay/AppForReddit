@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.example.user.appforreddit.Database.articleContract;
+import com.example.user.appforreddit.Database.ArticleContract;
 
 /**
  * Created by Akshay on 06-01-2018.
@@ -38,7 +38,7 @@ public class StackWidgetService extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
-            Uri queryUri = articleContract.articleEntry.CONTENT_URI;
+            Uri queryUri = ArticleContract.articleEntry.CONTENT_URI;
             c = getApplicationContext().getContentResolver().query(queryUri, null, null, null, null);
         }
 
@@ -57,8 +57,8 @@ public class StackWidgetService extends RemoteViewsService {
             RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_stack_item);
             if (position <= getCount()) {
                 c.moveToPosition(position);
-                String subUrl = c.getString(c.getColumnIndex(articleContract.articleEntry.COLUMN_SUBREDDIT_URL));
-                String title = c.getString(c.getColumnIndex(articleContract.articleEntry.COLUM_ARTICLE_TITLE));
+                String subUrl = c.getString(c.getColumnIndex(ArticleContract.articleEntry.COLUMN_SUBREDDIT_URL));
+                String title = c.getString(c.getColumnIndex(ArticleContract.articleEntry.COLUM_ARTICLE_TITLE));
                 rv.setTextViewText(R.id.stackWidgetItemTitle, subUrl);
                 rv.setTextViewText(R.id.stackWidgetItemBody, title);
             }

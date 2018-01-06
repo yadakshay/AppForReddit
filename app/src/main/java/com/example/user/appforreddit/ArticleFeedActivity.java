@@ -22,9 +22,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.user.appforreddit.Database.articleContract;
-import com.example.user.appforreddit.Database.articleDbHelper;
-import com.example.user.appforreddit.Database.subredditsContract;
+import com.example.user.appforreddit.Database.ArticleContract;
+import com.example.user.appforreddit.Database.ArticleDbHelper;
+import com.example.user.appforreddit.Database.SubredditsContract;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.google.android.gms.analytics.HitBuilders;
@@ -89,8 +89,8 @@ public class ArticleFeedActivity extends AppCompatActivity implements
 
             @Override
             public ArrayList<ArticleCustomObject> loadInBackground() {
-                Uri queryUri = subredditsContract.subredditEntry.CONTENT_URI;
-                Cursor c = getContext().getContentResolver().query(queryUri, null, subredditsContract.subredditEntry.COLUMN_DISPLAY_SUBREDDIT + " = ?",
+                Uri queryUri = SubredditsContract.subredditEntry.CONTENT_URI;
+                Cursor c = getContext().getContentResolver().query(queryUri, null, SubredditsContract.subredditEntry.COLUMN_DISPLAY_SUBREDDIT + " = ?",
                         new String[]{"show"}, null);
                 if (c != null) {
                     if (c.getCount() > 0) {
@@ -99,10 +99,10 @@ public class ArticleFeedActivity extends AppCompatActivity implements
                 }
                 if (articlesList != null) {
                     if (articlesList.size() > 0) {
-                        articleDbHelper dbHelper = new articleDbHelper(getApplicationContext());
+                        ArticleDbHelper dbHelper = new ArticleDbHelper(getApplicationContext());
                         SQLiteDatabase db = dbHelper.getWritableDatabase();
-                        db.delete(articleContract.articleEntry.TABLE_NAME, null, null); //delete existing articles for first login
-                        databaseUtils.addToArticlesDatabase(articlesList, getApplicationContext());
+                        db.delete(ArticleContract.articleEntry.TABLE_NAME, null, null); //delete existing articles for first login
+                        AppDatabaseUtils.addToArticlesDatabase(articlesList, getApplicationContext());
                     }
                 }
                 return articlesList;
@@ -116,7 +116,7 @@ public class ArticleFeedActivity extends AppCompatActivity implements
         mainListRecycler.setVisibility(View.VISIBLE);
         if (data != null) {
             if (data.size() > 0) {
-                Uri queryUri = articleContract.articleEntry.CONTENT_URI;
+                Uri queryUri = ArticleContract.articleEntry.CONTENT_URI;
                 Cursor c = getApplicationContext().getContentResolver().query(queryUri, null, null, null, null);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(this);
                 mAdapter = new MainArticleAapter(c, this, this);
@@ -152,7 +152,7 @@ public class ArticleFeedActivity extends AppCompatActivity implements
             String url = params[1];
             String json = NetworkUtils.getArticleForSubreddit(url, articleId, getApplicationContext());
             ArticleCustomObject article = NetworkUtils.extractArticleFromJson(json, url);
-            update = databaseUtils.replaceArticleWithNewArticle(article, getApplicationContext());
+            update = AppDatabaseUtils.replaceArticleWithNewArticle(article, getApplicationContext());
             return article;
         }
 
@@ -160,7 +160,7 @@ public class ArticleFeedActivity extends AppCompatActivity implements
         protected void onPostExecute(ArticleCustomObject i) {
             super.onPostExecute(i);
             if (update > 0) {
-                Uri queryUri = articleContract.articleEntry.CONTENT_URI;
+                Uri queryUri = ArticleContract.articleEntry.CONTENT_URI;
                 Cursor c = getApplicationContext().getContentResolver().query(queryUri, null, null, null, null);
                 c.moveToFirst();
                 mAdapter.swapArticleCursor(c);

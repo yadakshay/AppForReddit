@@ -18,7 +18,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.user.appforreddit.Database.subredditDbHelper;
+import com.example.user.appforreddit.Database.SubredditDbHelper;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
@@ -30,7 +30,7 @@ import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 
-import static com.example.user.appforreddit.Database.subredditsContract.subredditEntry.TABLE_NAME;
+import static com.example.user.appforreddit.Database.SubredditsContract.subredditEntry.TABLE_NAME;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<SubredditCustomObject>> {
 
@@ -135,11 +135,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
                 if(json != null) {
                     if (!json.matches("")) {
-                        subredditDbHelper dbHelper = new subredditDbHelper(getApplicationContext());
+                        SubredditDbHelper dbHelper = new SubredditDbHelper(getApplicationContext());
                         SQLiteDatabase db = dbHelper.getWritableDatabase();
                         db.delete(TABLE_NAME, null, null); //clear old data for first login
                         subscribedSubreddits = NetworkUtils.extractSubredditsFromJSON(json);
-                        databaseUtils.insertSubredditsToDatabase(subscribedSubreddits, getApplicationContext());
+                        AppDatabaseUtils.insertSubredditsToDatabase(subscribedSubreddits, getApplicationContext());
                     }
                 }
                 return subscribedSubreddits;

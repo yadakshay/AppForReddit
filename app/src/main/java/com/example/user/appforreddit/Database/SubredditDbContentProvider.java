@@ -11,17 +11,17 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import static com.example.user.appforreddit.Database.subredditsContract.subredditEntry.TABLE_NAME;
+import static com.example.user.appforreddit.Database.SubredditsContract.subredditEntry.TABLE_NAME;
 
 /**
  * Created by Akshay on 03-01-2018.
  */
 
-public class subredditDbContentProvider extends ContentProvider {
+public class SubredditDbContentProvider extends ContentProvider {
     public static final int SUBREDDIT = 100;
     public static final int SUBREDDIT_UPDATE = 101;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    private subredditDbHelper mDbHelper;
+    private SubredditDbHelper mDbHelper;
 
     private static UriMatcher buildUriMatcher() {
         // Initialize a UriMatcher with no matches by passing in NO_MATCH to the constructor
@@ -32,15 +32,15 @@ public class subredditDbContentProvider extends ContentProvider {
           The two calls below add matches for the task directory and a single item by ID.
          */
         ;
-        uriMatcher.addURI(subredditsContract.AUTHORITY, subredditsContract.PATH_TASK, SUBREDDIT);
-        uriMatcher.addURI(subredditsContract.AUTHORITY, subredditsContract.PATH_TASK + "/*", SUBREDDIT_UPDATE);
+        uriMatcher.addURI(SubredditsContract.AUTHORITY, SubredditsContract.PATH_TASK, SUBREDDIT);
+        uriMatcher.addURI(SubredditsContract.AUTHORITY, SubredditsContract.PATH_TASK + "/*", SUBREDDIT_UPDATE);
         return uriMatcher;
     }
 
     @Override
     public boolean onCreate() {
         Context context = getContext();
-        mDbHelper = new subredditDbHelper(context);
+        mDbHelper = new SubredditDbHelper(context);
         return true;
     }
 
@@ -64,7 +64,7 @@ public class subredditDbContentProvider extends ContentProvider {
                 String subredditId = uri.getPathSegments().get(1);
                 retCursor = db.query(TABLE_NAME,
                         null,
-                        subredditsContract.subredditEntry.COLUMN_SUBREDDIT_ID + " = ?",
+                        SubredditsContract.subredditEntry.COLUMN_SUBREDDIT_ID + " = ?",
                         new String[]{subredditId},
                         null,
                         null,
@@ -94,7 +94,7 @@ public class subredditDbContentProvider extends ContentProvider {
             case SUBREDDIT:
                 long id = db.insert(TABLE_NAME, null, cv);
                 if (id > 0) {
-                    returnUri = ContentUris.withAppendedId(subredditsContract.subredditEntry.CONTENT_URI, id);
+                    returnUri = ContentUris.withAppendedId(SubredditsContract.subredditEntry.CONTENT_URI, id);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
@@ -118,7 +118,7 @@ public class subredditDbContentProvider extends ContentProvider {
                 // Get the task ID from the URI path
                 String subredditId = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
-                subredditDeleted = db.delete(TABLE_NAME, subredditsContract.subredditEntry.COLUMN_SUBREDDIT_ID + " = ?", new String[]{subredditId});
+                subredditDeleted = db.delete(TABLE_NAME, SubredditsContract.subredditEntry.COLUMN_SUBREDDIT_ID + " = ?", new String[]{subredditId});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -140,7 +140,7 @@ public class subredditDbContentProvider extends ContentProvider {
                 String subredditId = uri.getPathSegments().get(1);
                 subredditUpdated = db.update(TABLE_NAME,
                         values,
-                        subredditsContract.subredditEntry.COLUMN_SUBREDDIT_ID + " = ?",
+                        SubredditsContract.subredditEntry.COLUMN_SUBREDDIT_ID + " = ?",
                         new String[]{subredditId});
                 break;
             default:

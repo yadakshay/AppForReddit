@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.util.Log;
 
-import com.example.user.appforreddit.Database.subredditsContract;
+import com.example.user.appforreddit.Database.SubredditsContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -270,7 +270,7 @@ public class NetworkUtils {
         for (int i = 0; i < c.getCount(); i++) {
              c.moveToPosition(i);
 
-                String subredditUrl = c.getString(c.getColumnIndex(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_URL));
+                String subredditUrl = c.getString(c.getColumnIndex(SubredditsContract.subredditEntry.COLUMN_SUBREDDIT_URL));
                 String json = getArticleForSubreddit(subredditUrl, null, cnt);
                 if (json != null) {
                     if (!json.matches("")) {

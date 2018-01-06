@@ -33,8 +33,8 @@
             android:layout_gravity="center"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/padding_10dp"
-            android:paddingLeft="@dimen/padding_4dp"
-            android:paddingRight="@dimen/padding_4dp"
+            android:paddingStart="@dimen/padding_4dp"
+            android:paddingEnd="@dimen/padding_4dp"
             android:paddingTop="@dimen/padding_10dp">
 
             <ImageView
@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/padding_8dp"
+                android:layout_marginStart="@dimen/padding_8dp"
                 android:textColor="@color/black" />
         </LinearLayout>
 
@@ -57,7 +57,7 @@
             android:id="@+id/xButton"
             android:layout_width="@dimen/padding_20dp"
             android:layout_height="@dimen/padding_20dp"
-            android:layout_gravity="top|right"
+            android:layout_gravity="top|end"
             android:background="@color/red"
             android:contentDescription="@string/dissmissCurrentDescription"
             android:text="@string/crossButton"

@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/keyline1"
+            android:layout_marginStart="@dimen/keyline1"
             android:layout_weight="1"
             android:textSize="@dimen/text_size_18sp" />
 
@@ -44,6 +44,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/width_1dp"
         android:background="@color/colorAccent"
-        android:paddingLeft="@dimen/padding_4dp"
-        android:paddingRight="@dimen/padding_4dp" />
+        android:paddingStart="@dimen/padding_4dp"
+        android:paddingEnd="@dimen/padding_4dp" />
 </LinearLayout>

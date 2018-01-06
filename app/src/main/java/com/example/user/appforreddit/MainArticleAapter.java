@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.user.appforreddit.Database.articleContract;
+import com.example.user.appforreddit.Database.ArticleContract;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -81,14 +81,14 @@ public class MainArticleAapter extends RecyclerView.Adapter<MainArticleAapter.ma
             articlesCursor.moveToPosition(listIndex);
             spinner.setVisibility(View.GONE);
             articleFrame.setVisibility(View.VISIBLE);
-            subredditNameHolder.setText(articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUMN_SUBREDDIT_URL)));
-            String imagePath = articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUMN_IMAGE_THUMB));
+            subredditNameHolder.setText(articlesCursor.getString(articlesCursor.getColumnIndex(ArticleContract.articleEntry.COLUMN_SUBREDDIT_URL)));
+            String imagePath = articlesCursor.getString(articlesCursor.getColumnIndex(ArticleContract.articleEntry.COLUMN_IMAGE_THUMB));
             if (imagePath != null && !imagePath.matches("")) {
                 Picasso.with(context).load(imagePath).into(thumbNailView);
             } else {
                 thumbNailView.setVisibility(View.INVISIBLE);
             }
-            articleTitleHolder.setText(articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUM_ARTICLE_TITLE)));
+            articleTitleHolder.setText(articlesCursor.getString(articlesCursor.getColumnIndex(ArticleContract.articleEntry.COLUM_ARTICLE_TITLE)));
             crossButton.setOnClickListener(this);
             articleContainer.setOnClickListener(this);
         }
@@ -100,12 +100,12 @@ public class MainArticleAapter extends RecyclerView.Adapter<MainArticleAapter.ma
             if (v == crossButton) {
                 spinner.setVisibility(View.VISIBLE);
                 articleFrame.setVisibility(View.GONE);
-                String id = articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUMN_ARTICLE_ID));
-                String subUrl = articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUMN_SUBREDDIT_URL));
+                String id = articlesCursor.getString(articlesCursor.getColumnIndex(ArticleContract.articleEntry.COLUMN_ARTICLE_ID));
+                String subUrl = articlesCursor.getString(articlesCursor.getColumnIndex(ArticleContract.articleEntry.COLUMN_SUBREDDIT_URL));
                 mItemClickListener.onListItemClick(id, subUrl);
             } else if (v == articleContainer) {
                 mItemClickListener.onListItemClick(null,
-                        articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUMN_ARTICLE_URL)));
+                        articlesCursor.getString(articlesCursor.getColumnIndex(ArticleContract.articleEntry.COLUMN_ARTICLE_URL)));
             }
         }
     }

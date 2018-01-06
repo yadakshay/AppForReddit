@@ -7,14 +7,14 @@ import android.provider.BaseColumns;
  * Created by Akshay on 04-01-2018.
  */
 
-public class articleContract {
+public class ArticleContract {
 
     public static final String AUTHORITY = "com.example.user.appforreddit.articleDb";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     public static final String PATH_TASK = "subredditURL";
 
     //constructor
-    private articleContract() {
+    private ArticleContract() {
     }
 
     public static final class articleEntry implements BaseColumns {

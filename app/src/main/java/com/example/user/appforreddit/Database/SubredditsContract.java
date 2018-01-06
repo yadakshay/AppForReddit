@@ -7,13 +7,13 @@ import android.provider.BaseColumns;
  * Created by Akshay on 03-01-2018.
  */
 
-public class subredditsContract {
+public class SubredditsContract {
     public static final String AUTHORITY = "com.example.user.appforreddit";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     public static final String PATH_TASK = "subReddits";
 
     //constructor
-    private subredditsContract() {
+    private SubredditsContract() {
     }
 
     public static final class subredditEntry implements BaseColumns {
