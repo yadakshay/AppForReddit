@@ -17,7 +17,7 @@ import com.example.user.appforreddit.Database.articleContract;
 import com.squareup.picasso.Picasso;
 
 /**
- * Created by user on 04-01-2018.
+ * Created by Akshay on 04-01-2018.
  */
 
 public class mainArticleAapter extends RecyclerView.Adapter<mainArticleAapter.mainArticleViewHolder> {

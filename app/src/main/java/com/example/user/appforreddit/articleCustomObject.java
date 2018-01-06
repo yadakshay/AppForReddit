@@ -1,7 +1,7 @@
 package com.example.user.appforreddit;
 
 /**
- * Created by user on 04-01-2018.
+ * Created by Akshay on 04-01-2018.
  */
 
 public class articleCustomObject {

@@ -12,7 +12,7 @@ import com.example.user.appforreddit.Database.subredditsContract;
 import java.util.ArrayList;
 
 /**
- * Created by user on 03-01-2018.
+ * Created by Akshay on 03-01-2018.
  */
 
 public class databaseUtils {

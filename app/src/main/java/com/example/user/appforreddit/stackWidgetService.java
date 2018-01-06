@@ -10,7 +10,7 @@ import android.widget.RemoteViewsService;
 import com.example.user.appforreddit.Database.articleContract;
 
 /**
- * Created by user on 06-01-2018.
+ * Created by Akshay on 06-01-2018.
  */
 
 public class stackWidgetService extends RemoteViewsService {
