@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'key0'
             keyPassword 'Passw0rd'
-            storeFile file('C:/Users/user/AndroidStudioProjects/AppForReddit/app/keystore/keystore.jks')
+            storeFile file("$rootDir/keystore.jks")
             storePassword 'Passw0rd'
         }
     }
