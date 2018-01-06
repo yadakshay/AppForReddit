@@ -22,6 +22,7 @@ public class subredditDbContentProvider extends ContentProvider {
     public static final int SUBREDDIT_UPDATE = 101;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private subredditDbHelper mDbHelper;
+
     private static UriMatcher buildUriMatcher() {
         // Initialize a UriMatcher with no matches by passing in NO_MATCH to the constructor
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -29,7 +30,8 @@ public class subredditDbContentProvider extends ContentProvider {
           All paths added to the UriMatcher have a corresponding int.
           For each kind of uri you may want to access, add the corresponding match with addURI.
           The two calls below add matches for the task directory and a single item by ID.
-         */;
+         */
+        ;
         uriMatcher.addURI(subredditsContract.AUTHORITY, subredditsContract.PATH_TASK, SUBREDDIT);
         uriMatcher.addURI(subredditsContract.AUTHORITY, subredditsContract.PATH_TASK + "/*", SUBREDDIT_UPDATE);
         return uriMatcher;
@@ -88,13 +90,12 @@ public class subredditDbContentProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         Uri returnUri;
 
-        switch (match){
+        switch (match) {
             case SUBREDDIT:
                 long id = db.insert(TABLE_NAME, null, cv);
-                if(id > 0)
-                {
+                if (id > 0) {
                     returnUri = ContentUris.withAppendedId(subredditsContract.subredditEntry.CONTENT_URI, id);
-                }else{
+                } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
                 break;

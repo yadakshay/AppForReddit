@@ -18,14 +18,15 @@ import java.util.ArrayList;
 public class databaseUtils {
     private static final String TAG = "redditAppDatabaseUtils";
     static Context context, contextForArticle;
-    public static void insertSubredditsToDatabase(ArrayList<subredditCustomObject> subredditList, Context c){
+
+    public static void insertSubredditsToDatabase(ArrayList<SubredditCustomObject> subredditList, Context c) {
         context = c;
-        for(int i = 0; i<subredditList.size(); i++){
+        for (int i = 0; i < subredditList.size(); i++) {
             checkDupicateAndInsertSubreddit(subredditList.get(i));
         }
     }
 
-    public static Uri checkDupicateAndInsertSubreddit(subredditCustomObject subredditObject){
+    public static Uri checkDupicateAndInsertSubreddit(SubredditCustomObject subredditObject) {
         ContentValues cv = new ContentValues();
         Uri uri = null;
         cv.put(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_ID, subredditObject.getSubredditId());
@@ -36,43 +37,52 @@ public class databaseUtils {
         Uri queryUri = subredditsContract.subredditEntry.CONTENT_URI;
         queryUri = queryUri.buildUpon().appendPath(subredditObject.getSubredditId()).build();
         Cursor c = context.getContentResolver().query(queryUri, null, null, null, null);
-        if(c !=null && c.getCount()>0){return null;}
-        else{
+        if (c != null && c.getCount() > 0) {
+            return null;
+        } else {
             uri = context.getContentResolver().insert(subredditsContract.subredditEntry.CONTENT_URI, cv);
             if (uri != null) {
-            //    Toast.makeText(context, "Sucess", Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(context, "Sucess", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "success submitting " + uri);
             } else {
-            //    Toast.makeText(context, "Failed to add", Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(context, "Failed to add", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "failed updating db " + uri);
-            }}
+            }
+        }
         return uri;
     }
 
-    public static void addToArticlesDatabase(ArrayList<articleCustomObject> articlesList, Context c){
-        contextForArticle =c;
-        for(int i = 0; i<articlesList.size(); i++){
-            checkDuplicateAndInsertArticle(articlesList.get(i));
+    public static void addToArticlesDatabase(ArrayList<ArticleCustomObject> articlesList, Context c) {
+        contextForArticle = c;
+        if(articlesList != null) {
+            if(articlesList.size() != 0) {
+                for (int i = 0; i < articlesList.size(); i++) {
+                    checkDuplicateAndInsertArticle(articlesList.get(i));
+                }
+            }
         }
     }
 
-    public static void checkDuplicateAndInsertArticle(articleCustomObject article){
-        ContentValues cv = new ContentValues();
-        Uri uri = null;
-        cv.put(articleContract.articleEntry.COLUMN_ARTICLE_URL, article.getResourceURL());
-        cv.put(articleContract.articleEntry.COLUM_ARTICLE_TITLE, article.getArticleTitle());
-        cv.put(articleContract.articleEntry.COLUMN_IMAGE_THUMB, article.getArticleThumbnail());
-        cv.put(articleContract.articleEntry.COLUMN_ARTICLE_ID, article.getArticleId());
-        cv.put(articleContract.articleEntry.COLUMN_SUBREDDIT_URL, article.getSubredditURL());
-        Uri queryUri = articleContract.articleEntry.CONTENT_URI;
-        queryUri = queryUri.buildUpon().appendPath(article.getSubredditURL()).build();
-        Cursor c = contextForArticle.getContentResolver().query(queryUri, null, null, null, null);
-        if(c !=null && c.getCount()>0){//do nothing
-        }else{
-            uri = contextForArticle.getContentResolver().insert(articleContract.articleEntry.CONTENT_URI, cv);
+    public static void checkDuplicateAndInsertArticle(ArticleCustomObject article) {
+        if(article != null) {
+            ContentValues cv = new ContentValues();
+            Uri uri = null;
+            cv.put(articleContract.articleEntry.COLUMN_ARTICLE_URL, article.getResourceURL());
+            cv.put(articleContract.articleEntry.COLUM_ARTICLE_TITLE, article.getArticleTitle());
+            cv.put(articleContract.articleEntry.COLUMN_IMAGE_THUMB, article.getArticleThumbnail());
+            cv.put(articleContract.articleEntry.COLUMN_ARTICLE_ID, article.getArticleId());
+            cv.put(articleContract.articleEntry.COLUMN_SUBREDDIT_URL, article.getSubredditURL());
+            Uri queryUri = articleContract.articleEntry.CONTENT_URI;
+            queryUri = queryUri.buildUpon().appendPath(article.getSubredditURL()).build();
+            Cursor c = contextForArticle.getContentResolver().query(queryUri, null, null, null, null);
+            if (c != null && c.getCount() > 0) {//do nothing
+            } else {
+                uri = contextForArticle.getContentResolver().insert(articleContract.articleEntry.CONTENT_URI, cv);
+            }
         }
     }
-    public static void checkDuplicateAndInsertIndArticle(articleCustomObject article, Context contxt){
+
+    public static void checkDuplicateAndInsertIndArticle(ArticleCustomObject article, Context contxt) {
         ContentValues cv = new ContentValues();
         Uri uri = null;
         cv.put(articleContract.articleEntry.COLUMN_ARTICLE_URL, article.getResourceURL());
@@ -83,13 +93,13 @@ public class databaseUtils {
         Uri queryUri = articleContract.articleEntry.CONTENT_URI;
         queryUri = queryUri.buildUpon().appendPath(article.getSubredditURL()).build();
         Cursor c = contxt.getContentResolver().query(queryUri, null, null, null, null);
-        if(c !=null && c.getCount()>0){//do nothing
-        }else{
+        if (c != null && c.getCount() > 0) {//do nothing
+        } else {
             uri = contextForArticle.getContentResolver().insert(articleContract.articleEntry.CONTENT_URI, cv);
         }
     }
 
-    public static int replaceArticleWithNewArticle(articleCustomObject article, Context con){
+    public static int replaceArticleWithNewArticle(ArticleCustomObject article, Context con) {
         ContentValues cv = new ContentValues();
         Uri uri = null;
         int updated;

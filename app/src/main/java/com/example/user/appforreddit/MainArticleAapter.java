@@ -20,24 +20,25 @@ import com.squareup.picasso.Picasso;
  * Created by Akshay on 04-01-2018.
  */
 
-public class mainArticleAapter extends RecyclerView.Adapter<mainArticleAapter.mainArticleViewHolder> {
+public class MainArticleAapter extends RecyclerView.Adapter<MainArticleAapter.mainArticleViewHolder> {
     private Cursor articlesCursor;
     private dismissItemClickListener mItemClickListener;
     private Context context;
+
     //interface for click listener
     public interface dismissItemClickListener {
         void onListItemClick(String clickedArticleId, String ShoworHide);
     }
 
     //constructor
-    public mainArticleAapter(Cursor c, dismissItemClickListener clkListener, Context contxt){
+    public MainArticleAapter(Cursor c, dismissItemClickListener clkListener, Context contxt) {
         articlesCursor = c;
         mItemClickListener = clkListener;
         context = contxt;
     }
 
     @Override
-    public mainArticleAapter.mainArticleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MainArticleAapter.mainArticleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.article_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -48,7 +49,7 @@ public class mainArticleAapter extends RecyclerView.Adapter<mainArticleAapter.ma
     }
 
     @Override
-    public void onBindViewHolder(mainArticleAapter.mainArticleViewHolder holder, int position) {
+    public void onBindViewHolder(MainArticleAapter.mainArticleViewHolder holder, int position) {
         holder.bind(position);
     }
 
@@ -57,7 +58,7 @@ public class mainArticleAapter extends RecyclerView.Adapter<mainArticleAapter.ma
         return articlesCursor.getCount();
     }
 
-    public class mainArticleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class mainArticleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView articleTitleHolder, subredditNameHolder, articleExtraHolder;
         ImageView thumbNailView;
         Button crossButton;
@@ -82,9 +83,9 @@ public class mainArticleAapter extends RecyclerView.Adapter<mainArticleAapter.ma
             articleFrame.setVisibility(View.VISIBLE);
             subredditNameHolder.setText(articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUMN_SUBREDDIT_URL)));
             String imagePath = articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUMN_IMAGE_THUMB));
-            if(imagePath != null && !imagePath.matches("")) {
+            if (imagePath != null && !imagePath.matches("")) {
                 Picasso.with(context).load(imagePath).into(thumbNailView);
-            }else{
+            } else {
                 thumbNailView.setVisibility(View.INVISIBLE);
             }
             articleTitleHolder.setText(articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUM_ARTICLE_TITLE)));
@@ -96,18 +97,19 @@ public class mainArticleAapter extends RecyclerView.Adapter<mainArticleAapter.ma
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
             articlesCursor.moveToPosition(clickedPosition);
-            if(v == crossButton) {
+            if (v == crossButton) {
                 spinner.setVisibility(View.VISIBLE);
                 articleFrame.setVisibility(View.GONE);
                 String id = articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUMN_ARTICLE_ID));
                 String subUrl = articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUMN_SUBREDDIT_URL));
                 mItemClickListener.onListItemClick(id, subUrl);
-            }else if(v == articleContainer){
+            } else if (v == articleContainer) {
                 mItemClickListener.onListItemClick(null,
                         articlesCursor.getString(articlesCursor.getColumnIndex(articleContract.articleEntry.COLUMN_ARTICLE_URL)));
             }
         }
     }
+
     public void swapArticleCursor(Cursor newCursor) {
         // Always close the previous mCursor first
         if (articlesCursor != null) articlesCursor.close();

@@ -11,8 +11,10 @@ public class subredditsContract {
     public static final String AUTHORITY = "com.example.user.appforreddit";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     public static final String PATH_TASK = "subReddits";
+
     //constructor
-    private subredditsContract(){}
+    private subredditsContract() {
+    }
 
     public static final class subredditEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TASK).build();

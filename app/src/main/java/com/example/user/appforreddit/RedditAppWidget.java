@@ -9,16 +9,16 @@ import android.widget.RemoteViews;
 /**
  * Implementation of App Widget functionality.
  */
-public class redditAppWidget extends AppWidgetProvider {
+public class RedditAppWidget extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-       // CharSequence widgetText = context.getString(R.string.appwidget_text);
+        // CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.reddit_app_widget);
         //views.setTextViewText(R.id.appwidget_text, widgetText);
-        Intent serviceIntent = new Intent(context, stackWidgetService.class);
+        Intent serviceIntent = new Intent(context, StackWidgetService.class);
         views.setRemoteAdapter(R.id.stackWidgetView, serviceIntent);
         views.setEmptyView(R.id.stackWidgetView, R.id.appwidget_text);
         // Instruct the widget manager to update the widget

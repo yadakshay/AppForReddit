@@ -1,44 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:id="@+id/subredditName"
-        android:layout_marginLeft="@dimen/keyline1"
-        android:layout_gravity="center_vertical"
-        android:textSize="@dimen/text_size_18sp"/>
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/padding_4dp"
-        android:id="@+id/containingFrame">
+
+        <TextView
+            android:id="@+id/subredditName"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/keyline1"
+            android:layout_weight="1"
+            android:textSize="@dimen/text_size_18sp" />
+
+        <FrameLayout
+            android:id="@+id/containingFrame"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/padding_4dp">
+
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/show"
-                android:text="@string/showString"
-                android:background="@color/green"
-            />
-            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/green"
+                android:text="@string/showString" />
+
+            <Button
                 android:id="@+id/hide"
-                android:text="@string/hideString"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:background="@color/orange"
-            />
-    </FrameLayout>
+                android:text="@string/hideString" />
+        </FrameLayout>
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/width_1dp"
         android:background="@color/colorAccent"
         android:paddingLeft="@dimen/padding_4dp"
-        android:paddingRight="@dimen/padding_4dp"/>
+        android:paddingRight="@dimen/padding_4dp" />
 </LinearLayout>

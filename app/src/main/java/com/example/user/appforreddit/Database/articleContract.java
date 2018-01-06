@@ -12,8 +12,10 @@ public class articleContract {
     public static final String AUTHORITY = "com.example.user.appforreddit.articleDb";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     public static final String PATH_TASK = "subredditURL";
+
     //constructor
-    private articleContract(){}
+    private articleContract() {
+    }
 
     public static final class articleEntry implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TASK).build();

@@ -17,11 +17,12 @@ import com.example.user.appforreddit.Database.subredditsContract;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-public class SubRedditPreferenceActivity extends AppCompatActivity implements subredditsCustomAdapter.showhideItemClickListener{
+public class SubRedditPreferenceActivity extends AppCompatActivity implements SubredditsCustomAdapter.showhideItemClickListener {
     private RecyclerView subredditRV;
-    private subredditsCustomAdapter mAdapter;
+    private SubredditsCustomAdapter mAdapter;
     private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
     FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +36,7 @@ public class SubRedditPreferenceActivity extends AppCompatActivity implements su
         Uri queryUri = subredditsContract.subredditEntry.CONTENT_URI;
         Cursor c = this.getContentResolver().query(queryUri, null, null, null, null);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mAdapter = new subredditsCustomAdapter(c, this);
+        mAdapter = new SubredditsCustomAdapter(c, this);
         subredditRV.setLayoutManager(layoutManager);
         subredditRV.setAdapter(mAdapter);
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -56,25 +57,27 @@ public class SubRedditPreferenceActivity extends AppCompatActivity implements su
         articeURI = articeURI.buildUpon().appendPath(subredditURL).build();
         if (s.matches("show")) {
             cv.put(subredditsContract.subredditEntry.COLUMN_DISPLAY_SUBREDDIT, "hide");
-        }else{
+        } else {
             cv.put(subredditsContract.subredditEntry.COLUMN_DISPLAY_SUBREDDIT, "show");
         }
         Uri updateUri = subredditsContract.subredditEntry.CONTENT_URI;
         updateUri = updateUri.buildUpon().appendPath(clickedItemId).build();
         int updated = this.getContentResolver().update(updateUri, cv, null, null);
 
-        if(updated>0){
+        if (updated > 0) {
             Uri queryUri = subredditsContract.subredditEntry.CONTENT_URI;
             Cursor c = this.getContentResolver().query(queryUri, null, null, null, null);
             mAdapter.swapCursor(c);
         }
     }
+
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
         subredditRV.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
     }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

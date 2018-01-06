@@ -15,20 +15,23 @@ import com.example.user.appforreddit.Database.subredditsContract;
  * Created by Akshay on 04-01-2018.
  */
 
-public class subredditsCustomAdapter extends RecyclerView.Adapter<subredditsCustomAdapter.subredditsViewHolder>{
+public class SubredditsCustomAdapter extends RecyclerView.Adapter<SubredditsCustomAdapter.subredditsViewHolder> {
     private Cursor subredditsCursor;
     private showhideItemClickListener showHideClickListener;
+
     //interface for click listener
     public interface showhideItemClickListener {
         void onListItemClick(String clickedItemId, String ShoworHide, String SubredditURL);
     }
+
     //constructor
-    public subredditsCustomAdapter(Cursor c, showhideItemClickListener listener){
+    public SubredditsCustomAdapter(Cursor c, showhideItemClickListener listener) {
         subredditsCursor = c;
         showHideClickListener = listener;
     }
+
     @Override
-    public subredditsCustomAdapter.subredditsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SubredditsCustomAdapter.subredditsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         int layoutIdForListItem = R.layout.subreddit_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -39,7 +42,7 @@ public class subredditsCustomAdapter extends RecyclerView.Adapter<subredditsCust
     }
 
     @Override
-    public void onBindViewHolder(subredditsCustomAdapter.subredditsViewHolder holder, int position) {
+    public void onBindViewHolder(SubredditsCustomAdapter.subredditsViewHolder holder, int position) {
         holder.bind(position);
     }
 
@@ -48,7 +51,7 @@ public class subredditsCustomAdapter extends RecyclerView.Adapter<subredditsCust
         return subredditsCursor.getCount();
     }
 
-    public class subredditsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class subredditsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView subredditName;
         Button show, hide;
 
@@ -66,10 +69,10 @@ public class subredditsCustomAdapter extends RecyclerView.Adapter<subredditsCust
             subredditsCursor.moveToPosition(listIndex);
             subredditName.setText(subredditsCursor.getString(subredditsCursor.getColumnIndex(subredditsContract.subredditEntry.COLUMN_SUBREDDIT_DISPLAYNAME_PREFIXED)));
             String displayPref = subredditsCursor.getString(subredditsCursor.getColumnIndex(subredditsContract.subredditEntry.COLUMN_DISPLAY_SUBREDDIT));
-            if(displayPref.matches("show")){
+            if (displayPref.matches("show")) {
                 hide.setVisibility(View.GONE);
                 show.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 show.setVisibility(View.GONE);
                 hide.setVisibility(View.VISIBLE);
             }
@@ -78,10 +81,10 @@ public class subredditsCustomAdapter extends RecyclerView.Adapter<subredditsCust
         @Override
         public void onClick(View v) {
             String SorH, id, subredditURL;
-            if((Button) v == show){
-                SorH= "show";
-            }else{
-                SorH="hide";
+            if ((Button) v == show) {
+                SorH = "show";
+            } else {
+                SorH = "hide";
             }
             int clickedPosition = getAdapterPosition();
             subredditsCursor.moveToPosition(clickedPosition);
@@ -90,6 +93,7 @@ public class subredditsCustomAdapter extends RecyclerView.Adapter<subredditsCust
             showHideClickListener.onListItemClick(id, SorH, subredditURL);
         }
     }
+
     public void swapCursor(Cursor newCursor) {
         // Always close the previous mCursor first
         if (subredditsCursor != null) subredditsCursor.close();

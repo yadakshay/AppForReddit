@@ -4,14 +4,15 @@ import android.os.AsyncTask;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
+
 /**
  * Created by Akshay on 05-01-2018.
  */
 
-public class refreshTokenJobService extends JobService {
+public class RefreshTokenJobService extends JobService {
     @Override
     public boolean onStartJob(JobParameters job) {
-       // NetworkUtils.refreshAccessToken(getApplicationContext());
+        // NetworkUtils.refreshAccessToken(getApplicationContext());
         new refreshToken().execute();
         return false;
     }
@@ -21,12 +22,13 @@ public class refreshTokenJobService extends JobService {
         return false;
     }
 
-    private class refreshToken extends AsyncTask<Void, Void, Void>{
+    private class refreshToken extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             NetworkUtils.refreshSyncAccessToken(getApplicationContext());
             return null;
         }
+
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);

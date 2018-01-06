@@ -21,6 +21,7 @@ public class articleDbContentProvider extends ContentProvider {
     public static final int ARTICLE_UPDATE = 106;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private articleDbHelper mDbHelper;
+
     private static UriMatcher buildUriMatcher() {
         // Initialize a UriMatcher with no matches by passing in NO_MATCH to the constructor
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -28,7 +29,8 @@ public class articleDbContentProvider extends ContentProvider {
           All paths added to the UriMatcher have a corresponding int.
           For each kind of uri you may want to access, add the corresponding match with addURI.
           The two calls below add matches for the task directory and a single item by ID.
-         */;
+         */
+        ;
         uriMatcher.addURI(articleContract.AUTHORITY, articleContract.PATH_TASK, ARTICLE);
         uriMatcher.addURI(articleContract.AUTHORITY, articleContract.PATH_TASK + "/*", ARTICLE_UPDATE);
         return uriMatcher;
@@ -87,13 +89,12 @@ public class articleDbContentProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         Uri returnUri;
 
-        switch (match){
+        switch (match) {
             case ARTICLE:
                 long id = db.insert(articleContract.articleEntry.TABLE_NAME, null, values);
-                if(id > 0)
-                {
+                if (id > 0) {
                     returnUri = ContentUris.withAppendedId(articleContract.articleEntry.CONTENT_URI, id);
-                }else{
+                } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
                 break;

@@ -14,4 +14,7 @@
     <string name="add_widget">Add widget</string>
     <string name="no_activities">No articles to display</string>
     <string name="appwidget_empty">No data to display</string>
+    <string name="launchSeubredditPreferenceFAB">Button launches your feed preference  sceen</string>
+    <string name="noDataRetrived">No data retrieved</string>
+    <string name="saveSubredditPref">Save subreddit preferences and return to feed</string>
 </resources>

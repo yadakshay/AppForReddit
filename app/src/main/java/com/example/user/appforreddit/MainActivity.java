@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 import static com.example.user.appforreddit.Database.subredditsContract.subredditEntry.TABLE_NAME;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<subredditCustomObject>> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<SubredditCustomObject>> {
 
     private static final String AUTH_URL =
             "https://www.reddit.com/api/v1/authorize.compact?client_id=%s" +
@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private TextView tv;
     private ProgressBar loadingBar;
     private Button signInToReddit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         loadingBar = (ProgressBar) findViewById(R.id.loading_spinner);
         signInToReddit = (Button) findViewById(R.id.signin);
         AdView mAdView = (AdView) findViewById(R.id.adView);
-        if(isConnected) {
+        if (isConnected) {
             signInToReddit.setVisibility(View.VISIBLE);
             tv.setVisibility(View.GONE);
             AdRequest adRequest = new AdRequest.Builder()
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 startActivity(i);
                 finish();
             }
-        }else{
+        } else {
             tv.setVisibility(View.VISIBLE);
             signInToReddit.setVisibility(View.GONE);
         }
@@ -91,8 +92,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onResume() {
         super.onResume();
-        if(getIntent()!=null) {
-            if(getIntent().getAction() != null) {
+        if (getIntent() != null) {
+            if (getIntent().getAction() != null) {
                 if (getIntent().getAction().equals(Intent.ACTION_VIEW)) {
                     Uri uri = getIntent().getData();
                     if (uri.getQueryParameter("error") != null) {
@@ -114,10 +115,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader onCreateLoader(int id, final Bundle args) {
-        return new AsyncTaskLoader(this){
+        return new AsyncTaskLoader(this) {
             String accessCode = args.getString(ACCESSCODE_ID);
             String json = null;
-            ArrayList<subredditCustomObject> subscribedSubreddits;
+            ArrayList<SubredditCustomObject> subscribedSubreddits;
+
             @Override
             protected void onStartLoading() {
                 super.onStartLoading();
@@ -126,28 +128,32 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
 
             @Override
-            public ArrayList<subredditCustomObject> loadInBackground() {
+            public ArrayList<SubredditCustomObject> loadInBackground() {
                 boolean haveToken = NetworkUtils.getSyncAccessToken(accessCode, getContext());
-                if(haveToken){
+                if (haveToken) {
                     json = NetworkUtils.makeSubredditCall(getApplicationContext());
                 }
-                subredditDbHelper dbHelper = new subredditDbHelper(getApplicationContext());
-                SQLiteDatabase db = dbHelper.getWritableDatabase();
-                db.delete(TABLE_NAME, null, null); //clear old data for first login
-                subscribedSubreddits = NetworkUtils.extractSubredditsFromJSON(json);
-                databaseUtils.insertSubredditsToDatabase(subscribedSubreddits, getApplicationContext());
+                if(json != null) {
+                    if (!json.matches("")) {
+                        subredditDbHelper dbHelper = new subredditDbHelper(getApplicationContext());
+                        SQLiteDatabase db = dbHelper.getWritableDatabase();
+                        db.delete(TABLE_NAME, null, null); //clear old data for first login
+                        subscribedSubreddits = NetworkUtils.extractSubredditsFromJSON(json);
+                        databaseUtils.insertSubredditsToDatabase(subscribedSubreddits, getApplicationContext());
+                    }
+                }
                 return subscribedSubreddits;
             }
         };
     }
 
     @Override
-    public void onLoadFinished(Loader<ArrayList<subredditCustomObject>> loader, ArrayList<subredditCustomObject> data) {
+    public void onLoadFinished(Loader<ArrayList<SubredditCustomObject>> loader, ArrayList<SubredditCustomObject> data) {
         loadingBar.setVisibility(View.GONE);
         // schedule jobs on first login
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
         Job myJob = dispatcher.newJobBuilder()
-                .setService(refreshTokenJobService.class) // the JobService that will be called
+                .setService(RefreshTokenJobService.class) // the JobService that will be called
                 .setTag("refresh-tag")        // uniquely identifies the job
                 .setRecurring(true)
                 .setLifetime(Lifetime.UNTIL_NEXT_BOOT) // don't persist past a device reboot

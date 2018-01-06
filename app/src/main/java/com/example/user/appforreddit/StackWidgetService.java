@@ -13,21 +13,24 @@ import com.example.user.appforreddit.Database.articleContract;
  * Created by Akshay on 06-01-2018.
  */
 
-public class stackWidgetService extends RemoteViewsService {
+public class StackWidgetService extends RemoteViewsService {
 
-    public stackWidgetService() {
+    public StackWidgetService() {
     }
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new StackRemoteViewsFactory(this.getApplicationContext(), intent);
     }
+
     class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         private Context mContext;
         Cursor c;
+
         public StackRemoteViewsFactory(Context applicationContext, Intent intent) {
             mContext = applicationContext;
         }
+
         @Override
         public void onCreate() {
 
@@ -36,7 +39,7 @@ public class stackWidgetService extends RemoteViewsService {
         @Override
         public void onDataSetChanged() {
             Uri queryUri = articleContract.articleEntry.CONTENT_URI;
-           c = getApplicationContext().getContentResolver().query(queryUri, null, null, null, null);
+            c = getApplicationContext().getContentResolver().query(queryUri, null, null, null, null);
         }
 
         @Override

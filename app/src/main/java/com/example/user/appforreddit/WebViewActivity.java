@@ -11,8 +11,9 @@ import android.webkit.WebViewClient;
 
 import static com.example.user.appforreddit.ArticleFeedActivity.ARTICLE_URL_KEY;
 
-public class webViewActivity extends AppCompatActivity {
+public class WebViewActivity extends AppCompatActivity {
     private WebView webview;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,34 +28,34 @@ public class webViewActivity extends AppCompatActivity {
         webSettings.setLoadWithOverviewMode(true);
         webview.setWebViewClient(new WebViewClient());
         webview.setWebChromeClient(new WebChromeClient());
-        if (savedInstanceState == null)
-        {
+        if (savedInstanceState == null) {
             webview.loadUrl(url);
-        }else{
+        } else {
             webview.restoreState(savedInstanceState);
         }
     }
+
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK) && webview.canGoBack()) {
             webview.goBack();
-//If there is history, then the canGoBack method will return ‘true’//
+            //If there is history, then the canGoBack method will return ‘true’//
             return true;
         }
-//If the button that’s been pressed wasn’t the ‘Back’ button, or there’s currently no
-//WebView history, then the system should resort to its default behavior and return
-//the user to the previous Activity//
+        //If the button that’s been pressed wasn’t the ‘Back’ button, or there’s currently no
+        //WebView history, then the system should resort to its default behavior and return
+        //the user to the previous Activity
         return super.onKeyDown(keyCode, event);
     }
+
     @Override
-    protected void onSaveInstanceState(Bundle outState )
-    {
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         webview.saveState(outState);
     }
+
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState)
-    {
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         webview.restoreState(savedInstanceState);
     }

@@ -12,7 +12,7 @@ public class subredditDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "subreddits.db";
     private static final int DATABASE_VERSION = 1;
 
-    public subredditDbHelper(Context context){
+    public subredditDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

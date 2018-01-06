@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
     android:id="@+id/stackWidgetItem"
-    android:background="@drawable/widget_item_background">
-    <TextView android:id="@+id/stackWidgetItemTitle"
-    android:textSize="@dimen/text_size_14sp"
-    android:layout_height="wrap_content"
     android:layout_width="wrap_content"
-    android:padding="@dimen/padding_8dp"
-        android:textColor="@color/colorAccent"/>
-    <TextView android:id="@+id/stackWidgetItemBody"
-        android:textSize="@dimen/text_size_12sp"
-        android:layout_height="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/widget_item_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/stackWidgetItemTitle"
         android:layout_width="wrap_content"
-        android:padding="@dimen/padding_8dp"/>
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_8dp"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/text_size_14sp" />
+
+    <TextView
+        android:id="@+id/stackWidgetItemBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_8dp"
+        android:textSize="@dimen/text_size_12sp" />
 </LinearLayout>

@@ -1,62 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/padding_4dp"
-    android:background="@color/colorBack1">
+    android:background="@color/colorBack1"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_4dp">
+
     <TextView
+        android:id="@+id/subredditNameHolder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/subredditNameHolder"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
+
     <ProgressBar
         android:id="@+id/loading_spinner"
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="visible"/>
+        android:visibility="visible" />
+
     <FrameLayout
+        android:id="@+id/articleFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorBack"
-        android:id="@+id/articleFrameLayout">
+        android:background="@color/colorBack">
+
         <LinearLayout
+            android:id="@+id/articleHolder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/articleHolder"
             android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/padding_10dp"
             android:paddingLeft="@dimen/padding_4dp"
             android:paddingRight="@dimen/padding_4dp"
-            android:paddingTop="@dimen/padding_10dp"
-            android:paddingBottom="@dimen/padding_10dp">
+            android:paddingTop="@dimen/padding_10dp">
+
             <ImageView
+                android:id="@+id/articleThumbnail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/articleThumbnail"
                 android:layout_gravity="center_vertical"
-                android:contentDescription="@string/imageDescription"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/articleTitleHolder"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/padding_8dp"/>
-            </LinearLayout>
+                android:contentDescription="@string/imageDescription" />
+
+            <TextView
+                android:id="@+id/articleTitleHolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/padding_8dp"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
         <Button
+            android:id="@+id/xButton"
             android:layout_width="@dimen/padding_20dp"
             android:layout_height="@dimen/padding_20dp"
-            android:id="@+id/xButton"
-            android:background="@color/red"
-            android:text="@string/crossButton"
-            android:textColor="@color/white"
             android:layout_gravity="top|right"
-            android:contentDescription="@string/dissmissCurrentDescription"/>
+            android:background="@color/red"
+            android:contentDescription="@string/dissmissCurrentDescription"
+            android:text="@string/crossButton"
+            android:textColor="@color/white" />
     </FrameLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorPrimaryExtraDark"/>
+        android:background="@color/colorPrimaryExtraDark" />
 </LinearLayout>
